@@ -29,20 +29,20 @@ export function KelolaUserView({ theme }: { theme: "light" | "dark" }) {
             Kelola daftar operator instansi dan penetapan role Admin/Operator PTP-KPU
           </p>
         </div>
-        <button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-md shadow-red-600/30 flex items-center gap-2 cursor-pointer shrink-0 transition-all active:scale-95">
+        <button className="btn-kpu-red px-4 py-2 text-white font-bold text-xs rounded-xl flex items-center gap-2 cursor-pointer shrink-0 transition-all active:scale-95">
           <UserPlus className="w-4 h-4" />
           <span>Tambah User Baru</span>
         </button>
       </div>
 
-      <Card className={isDark ? "bg-[#0d1322] border-[#1e293b]" : "bg-white border-slate-200 shadow-sm"}>
-        <div className={`p-4 border-b ${isDark ? "border-[#1e293b]" : "border-slate-200"}`}>
+      <Card className={isDark ? "bg-[#0d1322] border-white/10" : "bg-white border-slate-200 shadow-sm"}>
+        <div className={`p-4 border-b ${isDark ? "border-white/10" : "border-slate-200"}`}>
           <h3 className={`text-sm font-bold ${isDark ? "text-white" : "text-black"}`}>Daftar Akun Terdaftar</h3>
         </div>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow className={isDark ? "border-b border-[#1e293b] bg-[#0a0e1a]" : "border-b border-slate-200 bg-slate-100"}>
+              <TableRow className={isDark ? "border-b border-white/30 bg-[#0a0e1a]" : "border-b border-slate-200 bg-slate-100"}>
                 <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-white" : "text-black"}`}>Nama Pengguna</TableHead>
                 <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-white" : "text-black"}`}>Email</TableHead>
                 <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-white" : "text-black"}`}>Subbagian</TableHead>
@@ -53,7 +53,7 @@ export function KelolaUserView({ theme }: { theme: "light" | "dark" }) {
             </TableHeader>
             <TableBody>
               {users.map((u) => (
-                <TableRow key={u.id} className={isDark ? "border-b border-[#1e293b]/40 hover:bg-[#131d30]" : "border-b border-slate-100 hover:bg-slate-50"}>
+                <TableRow key={u.id} className={isDark ? "border-b border-white/20 hover:bg-white/[0.05]" : "border-b border-slate-100 hover:bg-slate-50"}>
                   <TableCell className={`font-bold text-xs ${isDark ? "text-white" : "text-black"}`}>{u.name}</TableCell>
                   <TableCell className={`text-xs font-mono font-semibold ${isDark ? "text-gray-300" : "text-slate-800"}`}>{u.email}</TableCell>
                   <TableCell className={`text-xs font-bold ${isDark ? "text-gray-200" : "text-black"}`}>{u.subbagian}</TableCell>
