@@ -13,6 +13,9 @@ import {
   FileArchive,
   Trash2,
   EyeOff,
+  ChevronDown,
+  RotateCcw,
+  Filter,
 } from "lucide-react"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -244,10 +247,10 @@ const MOCK_ARSIP: ArsipItem[] = [
 
 const TAHUN_LIST = [2026, 2025, 2024]
 const BULAN_LIST = [
-  { label: "Jan", val: 1 }, { label: "Feb", val: 2 }, { label: "Mar", val: 3 },
-  { label: "Apr", val: 4 }, { label: "Mei", val: 5 }, { label: "Jun", val: 6 },
-  { label: "Jul", val: 7 }, { label: "Agt", val: 8 }, { label: "Sep", val: 9 },
-  { label: "Okt", val: 10 }, { label: "Nov", val: 11 }, { label: "Des", val: 12 },
+  { label: "Januari", val: 1 }, { label: "Februari", val: 2 }, { label: "Maret", val: 3 },
+  { label: "April", val: 4 }, { label: "Mei", val: 5 }, { label: "Juni", val: 6 },
+  { label: "Juli", val: 7 }, { label: "Agustus", val: 8 }, { label: "September", val: 9 },
+  { label: "Oktober", val: 10 }, { label: "November", val: 11 }, { label: "Desember", val: 12 },
 ]
 const EVENT_LIST = ["Operasional 2025", "Operasional 2026", "Pileg 2024", "Pilgub 2024", "Pilkada 2024", "Pilkada 2026"]
 const SUBBAGIAN_LIST = ["SDM", "PERDATIN", "Teknis", "Hukum", "Keuangan", "UMLOG"]
@@ -470,26 +473,43 @@ export function ArsipView({ theme }: { theme: "light" | "dark" }) {
   const isDark = theme === "dark"
   const [arsipList, setArsipList] = useState<ArsipItem[]>(MOCK_ARSIP)
   const [search, setSearch] = useState("")
-  const [showFilter, setShowFilter] = useState(true)
   const [uploadOpen, setUploadOpen] = useState(false)
-  const [filterTahun, setFilterTahun] = useState<number[]>([])
-  const [filterBulan, setFilterBulan] = useState<number[]>([])
-  const [filterEvent, setFilterEvent] = useState<string[]>([])
-  const [filterSubBagian, setFilterSubBagian] = useState<string[]>([])
-
-  const toggleArr = <T,>(arr: T[], val: T): T[] =>
-    arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val]
+  const [filterTahun, setFilterTahun] = useState<string>("")
+  const [filterBulan, setFilterBulan] = useState<string>("")
+  const [filterEvent, setFilterEvent] = useState<string>("")
+  const [filterSubBagian, setFilterSubBagian] = useState<string>("")
+  const [filterAkses, setFilterAkses] = useState<string>("")
 
   const filtered = arsipList.filter(d => {
-    const q = search.toLowerCase()
-    return (
-      (!q || d.name.toLowerCase().includes(q) || d.nomor.toLowerCase().includes(q)) &&
-      (!filterTahun.length || filterTahun.includes(d.tahun)) &&
-      (!filterBulan.length || filterBulan.includes(d.bulan)) &&
-      (!filterEvent.length || filterEvent.includes(d.event)) &&
-      (!filterSubBagian.length || filterSubBagian.includes(d.subBagian))
-    )
+    const q = search.toLowerCase().trim()
+    const matchesSearch =
+      !q ||
+      d.name.toLowerCase().includes(q) ||
+      d.nomor.toLowerCase().includes(q) ||
+      d.subBagian.toLowerCase().includes(q) ||
+      d.uploadedBy.toLowerCase().includes(q) ||
+      d.kode.toLowerCase().includes(q)
+    const matchesTahun = !filterTahun || d.tahun.toString() === filterTahun
+    const matchesBulan = !filterBulan || d.bulan.toString() === filterBulan
+    const matchesSubBagian = !filterSubBagian || d.subBagian === filterSubBagian
+    const matchesEvent = !filterEvent || d.event === filterEvent
+    const matchesAkses = !filterAkses || d.akses === filterAkses
+
+    return matchesSearch && matchesTahun && matchesBulan && matchesSubBagian && matchesEvent && matchesAkses
   })
+
+  const hasActiveFilters = Boolean(
+    search || filterTahun || filterBulan || filterSubBagian || filterEvent || filterAkses
+  )
+
+  const handleResetFilters = () => {
+    setSearch("")
+    setFilterTahun("")
+    setFilterBulan("")
+    setFilterSubBagian("")
+    setFilterEvent("")
+    setFilterAkses("")
+  }
 
   const handleDownload = (name: string) => {
     const blob = new Blob([`ARSIP DIGITAL PTP-KPU SULUT\nNama: ${name}\nStatus: Otentik & Terverifikasi`], { type: "text/plain" })
@@ -501,16 +521,11 @@ export function ArsipView({ theme }: { theme: "light" | "dark" }) {
     URL.revokeObjectURL(url)
   }
 
-  const hasActiveFilters = filterTahun.length || filterBulan.length || filterEvent.length || filterSubBagian.length
-
-  const filterBtnCls = (active: boolean) =>
-    `px-3 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
-      active ? "btn-kpu-red"
-      : isDark ? "bg-[#111827] text-gray-300 border-white/10 hover:border-red-500/30 hover:text-white"
-      : "bg-white text-slate-700 border-slate-300 hover:border-red-400 hover:text-red-600"
-    }`
-
-  const sectionLbl = `text-[11px] font-extrabold uppercase tracking-wider mb-2.5 ${isDark ? "text-gray-400" : "text-slate-500"}`
+  const selectCls = `appearance-none font-semibold text-xs pl-3.5 pr-8 py-2.5 rounded-xl border cursor-pointer outline-none transition-all ${
+    isDark
+      ? "bg-[#111827] border-white/10 text-white hover:border-red-500/40 focus:border-red-500"
+      : "bg-slate-50 border-slate-300 text-slate-800 hover:border-red-400 focus:border-red-500"
+  }`
 
   return (
     <div className="space-y-0 animate-in fade-in duration-200">
@@ -540,171 +555,249 @@ export function ArsipView({ theme }: { theme: "light" | "dark" }) {
         </span>
       </div>
 
-      {/* Layout */}
-      <div className="flex gap-5 items-start">
-        {/* Sidebar Filter */}
-        {showFilter && (
-          <aside className={`w-52 shrink-0 rounded-2xl border p-4.5 space-y-5 ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg`}>
-            <div className={`text-[11px] font-extrabold uppercase tracking-widest ${isDark ? "text-gray-400" : "text-slate-500"}`}>Filter Dokumen</div>
-
-            {/* Search */}
-            <div className="relative">
-              <Search className={`w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 ${isDark ? "text-gray-400" : "text-slate-400"}`} />
-              <input
-                placeholder="Cari nama, nomor..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                className={`w-full pl-8 pr-3 py-2 rounded-xl text-xs font-medium border outline-none transition-colors ${isDark ? "bg-[#111827] border-white/10 text-white placeholder-gray-500 focus:border-red-500/50" : "bg-slate-50 border-slate-300 text-black placeholder-slate-400 focus:border-red-400"}`}
-              />
-            </div>
-
-            {/* Tahun */}
-            <div>
-              <div className={sectionLbl}>Tahun</div>
-              <div className="flex flex-wrap gap-1.5">
-                {TAHUN_LIST.map(t => (
-                  <button key={t} onClick={() => setFilterTahun(p => toggleArr(p, t))} className={filterBtnCls(filterTahun.includes(t))}>{t}</button>
-                ))}
-              </div>
-            </div>
-
-            {/* Bulan */}
-            <div>
-              <div className={sectionLbl}>Bulan</div>
-              <div className="grid grid-cols-3 gap-1.5">
-                {BULAN_LIST.map(b => (
-                  <button key={b.val} onClick={() => setFilterBulan(p => toggleArr(p, b.val))} className={filterBtnCls(filterBulan.includes(b.val))}>{b.label}</button>
-                ))}
-              </div>
-            </div>
-
-            {/* Event */}
-            <div>
-              <div className={sectionLbl}>Event</div>
-              <div className="space-y-1.5">
-                {EVENT_LIST.map(ev => (
-                  <button key={ev} onClick={() => setFilterEvent(p => toggleArr(p, ev))}
-                    className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-                      filterEvent.includes(ev) ? "btn-kpu-red"
-                      : isDark ? "bg-[#111827] text-gray-300 border-white/10 hover:border-red-500/30 hover:text-white"
-                      : "bg-white text-slate-700 border-slate-200 hover:border-red-400 hover:text-red-600"
-                    }`}>
-                    {ev}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Sub Bagian */}
-            <div>
-              <div className={sectionLbl}>Sub Bagian</div>
-              <div className="space-y-1.5">
-                {SUBBAGIAN_LIST.map(sb => (
-                  <button key={sb} onClick={() => setFilterSubBagian(p => toggleArr(p, sb))}
-                    className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-                      filterSubBagian.includes(sb) ? "btn-kpu-red"
-                      : isDark ? "bg-[#111827] text-gray-300 border-white/10 hover:border-red-500/30 hover:text-white"
-                      : "bg-white text-slate-700 border-slate-200 hover:border-red-400 hover:text-red-600"
-                    }`}>
-                    {sb}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {!!hasActiveFilters && (
+      {/* Dropdown Filter Bar */}
+      <div className={`p-4 rounded-2xl border mb-5 space-y-3.5 ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg`}>
+        {/* Row 1: Search and Dropdowns */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Search Box */}
+          <div className="relative flex-1 min-w-[220px]">
+            <Search className={`w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 ${isDark ? "text-gray-400" : "text-slate-400"}`} />
+            <input
+              placeholder="Cari nama dokumen, nomor surat..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className={`w-full pl-9 pr-8 py-2.5 rounded-xl text-xs font-medium border outline-none transition-colors ${
+                isDark
+                  ? "bg-[#111827] border-white/10 text-white placeholder-gray-500 focus:border-red-500/50"
+                  : "bg-slate-50 border-slate-300 text-black placeholder-slate-400 focus:border-red-400"
+              }`}
+            />
+            {search && (
               <button
-                onClick={() => { setFilterTahun([]); setFilterBulan([]); setFilterEvent([]); setFilterSubBagian([]) }}
-                className={`w-full py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${isDark ? "border-red-500/30 text-red-400 hover:bg-red-950/40" : "border-red-300 text-red-600 hover:bg-red-50"}`}>
-                Reset Filter
+                onClick={() => setSearch("")}
+                className={`absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded-full ${isDark ? "text-gray-400 hover:text-white" : "text-slate-400 hover:text-slate-700"}`}
+              >
+                <X className="w-3.5 h-3.5" />
               </button>
             )}
-          </aside>
-        )}
-
-        {/* Document List */}
-        <div className="flex-1 min-w-0">
-          {/* Toolbar */}
-          <div className={`flex items-center justify-between px-5 py-3 rounded-2xl border mb-4 ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg`}>
-            <button
-              onClick={() => setShowFilter(p => !p)}
-              className={`flex items-center gap-2 text-xs font-bold transition-colors cursor-pointer ${isDark ? "text-gray-300 hover:text-white" : "text-slate-700 hover:text-black"}`}>
-              <SlidersHorizontal className="w-4 h-4" />
-              {showFilter ? "Sembunyikan Filter" : "Tampilkan Filter"}
-            </button>
-            <span className={`text-xs font-semibold ${isDark ? "text-gray-300" : "text-slate-600"}`}>
-              {filtered.length} dari {arsipList.length} dokumen
-            </span>
           </div>
 
-          {/* Cards */}
-          <div className="space-y-4">
-            {filtered.length === 0 ? (
-              <div className={`flex flex-col items-center justify-center py-16 rounded-2xl border ${isDark ? "bg-[#1e293b]/70 border-white/10 text-gray-500" : "bg-white/85 border-slate-200 text-slate-400"} backdrop-blur-md shadow-lg`}>
-                <FileArchive className="w-12 h-12 mb-3 opacity-30" />
-                <p className="text-base font-semibold">Tidak ada dokumen ditemukan</p>
-                <p className="text-xs mt-1">Coba ubah filter atau kata pencarian</p>
+          {/* Sub Bagian Dropdown */}
+          <div className="relative">
+            <select
+              value={filterSubBagian}
+              onChange={e => setFilterSubBagian(e.target.value)}
+              className={selectCls}
+            >
+              <option value="" className={isDark ? "bg-[#111827] text-white" : "bg-white text-slate-800"}>Semua Sub Bagian</option>
+              {SUBBAGIAN_LIST.map(sb => (
+                <option key={sb} value={sb} className={isDark ? "bg-[#111827] text-white" : "bg-white text-slate-800"}>
+                  {sb}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          </div>
+
+          {/* Tahun Dropdown */}
+          <div className="relative">
+            <select
+              value={filterTahun}
+              onChange={e => setFilterTahun(e.target.value)}
+              className={selectCls}
+            >
+              <option value="" className={isDark ? "bg-[#111827] text-white" : "bg-white text-slate-800"}>Semua Tahun</option>
+              {TAHUN_LIST.map(t => (
+                <option key={t} value={t.toString()} className={isDark ? "bg-[#111827] text-white" : "bg-white text-slate-800"}>
+                  Tahun {t}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          </div>
+
+          {/* Bulan Dropdown */}
+          <div className="relative">
+            <select
+              value={filterBulan}
+              onChange={e => setFilterBulan(e.target.value)}
+              className={selectCls}
+            >
+              <option value="" className={isDark ? "bg-[#111827] text-white" : "bg-white text-slate-800"}>Semua Bulan</option>
+              {BULAN_LIST.map(b => (
+                <option key={b.val} value={b.val.toString()} className={isDark ? "bg-[#111827] text-white" : "bg-white text-slate-800"}>
+                  {b.label}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          </div>
+
+          {/* Event Dropdown */}
+          <div className="relative">
+            <select
+              value={filterEvent}
+              onChange={e => setFilterEvent(e.target.value)}
+              className={selectCls}
+            >
+              <option value="" className={isDark ? "bg-[#111827] text-white" : "bg-white text-slate-800"}>Semua Event</option>
+              {EVENT_LIST.map(ev => (
+                <option key={ev} value={ev} className={isDark ? "bg-[#111827] text-white" : "bg-white text-slate-800"}>
+                  {ev}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          </div>
+
+          {/* Akses Dropdown */}
+          <div className="relative">
+            <select
+              value={filterAkses}
+              onChange={e => setFilterAkses(e.target.value)}
+              className={selectCls}
+            >
+              <option value="" className={isDark ? "bg-[#111827] text-white" : "bg-white text-slate-800"}>Semua Akses</option>
+              <option value="publik" className={isDark ? "bg-[#111827] text-white" : "bg-white text-slate-800"}>Publik</option>
+              <option value="internal" className={isDark ? "bg-[#111827] text-white" : "bg-white text-slate-800"}>Internal</option>
+              <option value="terbatas" className={isDark ? "bg-[#111827] text-white" : "bg-white text-slate-800"}>Terbatas</option>
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          </div>
+
+          {/* Reset Button */}
+          {hasActiveFilters && (
+            <button
+              onClick={handleResetFilters}
+              className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                isDark
+                  ? "border-red-500/30 text-red-400 bg-red-950/20 hover:bg-red-950/40"
+                  : "border-red-300 text-red-600 bg-red-50 hover:bg-red-100"
+              }`}
+              title="Reset semua filter"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Reset</span>
+            </button>
+          )}
+        </div>
+
+        {/* Row 2: Active Filter Chips & Counter */}
+        <div className={`flex flex-wrap items-center justify-between gap-2 pt-3 border-t text-xs ${isDark ? "border-white/10 text-gray-400" : "border-slate-200 text-slate-500"}`}>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-semibold flex items-center gap-1">
+              <Filter className="w-3.5 h-3.5 text-red-500" />
+              Filter Aktif:
+            </span>
+            {hasActiveFilters ? (
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {filterSubBagian && (
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border ${isDark ? "bg-slate-800 border-slate-700 text-gray-200" : "bg-slate-100 border-slate-300 text-slate-700"}`}>
+                    Sub Bagian: {filterSubBagian}
+                    <X className="w-3 h-3 cursor-pointer hover:text-red-500 ml-0.5" onClick={() => setFilterSubBagian("")} />
+                  </span>
+                )}
+                {filterTahun && (
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border ${isDark ? "bg-slate-800 border-slate-700 text-gray-200" : "bg-slate-100 border-slate-300 text-slate-700"}`}>
+                    Tahun: {filterTahun}
+                    <X className="w-3 h-3 cursor-pointer hover:text-red-500 ml-0.5" onClick={() => setFilterTahun("")} />
+                  </span>
+                )}
+                {filterBulan && (
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border ${isDark ? "bg-slate-800 border-slate-700 text-gray-200" : "bg-slate-100 border-slate-300 text-slate-700"}`}>
+                    Bulan: {BULAN_LIST.find(b => b.val.toString() === filterBulan)?.label || filterBulan}
+                    <X className="w-3 h-3 cursor-pointer hover:text-red-500 ml-0.5" onClick={() => setFilterBulan("")} />
+                  </span>
+                )}
+                {filterEvent && (
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border ${isDark ? "bg-slate-800 border-slate-700 text-gray-200" : "bg-slate-100 border-slate-300 text-slate-700"}`}>
+                    Event: {filterEvent}
+                    <X className="w-3 h-3 cursor-pointer hover:text-red-500 ml-0.5" onClick={() => setFilterEvent("")} />
+                  </span>
+                )}
+                {filterAkses && (
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border capitalize ${isDark ? "bg-slate-800 border-slate-700 text-gray-200" : "bg-slate-100 border-slate-300 text-slate-700"}`}>
+                    Akses: {filterAkses}
+                    <X className="w-3 h-3 cursor-pointer hover:text-red-500 ml-0.5" onClick={() => setFilterAkses("")} />
+                  </span>
+                )}
               </div>
             ) : (
-              filtered.map(doc => {
-                const darkA = AKSES_DARK[doc.akses]
-                const lightA = AKSES_LIGHT[doc.akses]
-                const AksesIcon = darkA.icon
-                return (
-                  <div key={doc.id} className={`flex items-center gap-4.5 p-4.5 sm:p-5 rounded-2xl border transition-all hover:shadow-lg ${isDark ? "bg-[#1e293b]/70 border-white/10 hover:border-white/30 hover:bg-[#1e293b]/90" : "bg-white/90 border-slate-200 hover:border-red-300 shadow-sm hover:shadow-md"} backdrop-blur-md`}>
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-b from-[#a8171f] to-[#750e14] text-white flex items-center justify-center shrink-0 shadow-xs">
-                      <FileText className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className={`font-mono text-xs font-extrabold ${isDark ? "text-gray-300" : "text-slate-600"}`}>{doc.nomor}</span>
-                        <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold border ${
-                          isDark ? "bg-red-950/50 text-red-300 border-red-800/60" : "bg-red-50 text-red-700 border-red-200"
-                        }`}>
-                          {doc.subBagian}
-                        </span>
-                        {[doc.kode, doc.tipe, doc.event].map(tag => (
-                          <span key={tag} className={`px-2 py-0.5 rounded-md text-[11px] font-semibold border ${isDark ? "bg-slate-800 text-gray-200 border-slate-700" : "bg-slate-100 text-slate-700 border-slate-300"}`}>{tag}</span>
-                        ))}
-                      </div>
-                      <h3 className={`text-base font-bold leading-snug ${isDark ? "text-white" : "text-black"}`}>{doc.name}</h3>
-                      <div className={`flex items-center gap-2 mt-1.5 text-xs font-medium flex-wrap ${isDark ? "text-gray-300" : "text-slate-600"}`}>
-                        <span>{doc.date}</span><span>·</span><span>{doc.size}</span><span>·</span>
-                        <span className="flex items-center gap-1">
-                          <ShieldCheck className="w-3.5 h-3.5 text-red-500 shrink-0" />
-                          <span>Diunggah oleh <strong className={`font-bold ${isDark ? "text-red-400" : "text-red-600"}`}>{doc.uploadedBy}</strong></span>
-                        </span>
-                        <span>·</span><span>{doc.uploadedAt}</span>
-                      </div>
-                      {doc.akses === "terbatas" && (
-                        <div className={`inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 rounded-md text-xs font-semibold ${isDark ? "bg-red-950/30 text-red-300 border border-red-800/40" : "bg-red-50 text-red-700 border border-red-200"}`}>
-                          <Lock className="w-3 h-3 text-red-500 shrink-0" />
-                          <span>Akses terbatas — hanya untuk sub bagian {doc.subBagian}</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black ${isDark ? "bg-slate-800 text-gray-200 border border-slate-700" : "bg-slate-100 text-slate-700 border border-slate-300"}`}>
-                        {doc.kode}
-                      </div>
-                      <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border capitalize ${isDark ? `${darkA.bg} ${darkA.text}` : `${lightA.bg} ${lightA.text}`}`}>
-                        <AksesIcon className="w-3.5 h-3.5" />
-                        <span>{doc.akses}</span>
-                      </span>
-                      <button onClick={() => handleDownload(doc.name)} title="Unduh" className="btn-kpu-red p-2.5 rounded-xl text-white cursor-pointer active:scale-95">
-                        <Download className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => setArsipList(p => p.filter(x => x.id !== doc.id))} title="Hapus"
-                        className={`p-2.5 rounded-xl border transition-all cursor-pointer active:scale-95 ${isDark ? "border-white/10 text-gray-400 hover:border-red-500/40 hover:text-red-400 hover:bg-red-950/20" : "border-slate-200 text-slate-400 hover:border-red-300 hover:text-red-600 hover:bg-red-50"}`}>
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                )
-              })
+              <span className="italic text-[11px]">Semua filter kosong / Menampilkan seluruh dokumen</span>
             )}
           </div>
+          <span className={`font-semibold shrink-0 ${isDark ? "text-gray-300" : "text-slate-600"}`}>
+            Menampilkan <strong className={isDark ? "text-white" : "text-black"}>{filtered.length}</strong> dari {arsipList.length} dokumen
+          </span>
         </div>
+      </div>
+
+      {/* Document List */}
+      <div className="space-y-4">
+        {filtered.length === 0 ? (
+          <div className={`flex flex-col items-center justify-center py-16 rounded-2xl border ${isDark ? "bg-[#1e293b]/70 border-white/10 text-gray-500" : "bg-white/85 border-slate-200 text-slate-400"} backdrop-blur-md shadow-lg`}>
+            <FileArchive className="w-12 h-12 mb-3 opacity-30" />
+            <p className="text-base font-semibold">Tidak ada dokumen ditemukan</p>
+            <p className="text-xs mt-1">Coba ubah filter dropdown atau kata pencarian</p>
+          </div>
+        ) : (
+          filtered.map(doc => {
+            const darkA = AKSES_DARK[doc.akses]
+            const lightA = AKSES_LIGHT[doc.akses]
+            const AksesIcon = darkA.icon
+            return (
+              <div key={doc.id} className={`flex items-center gap-4.5 p-4.5 sm:p-5 rounded-2xl border transition-all hover:shadow-lg ${isDark ? "bg-[#1e293b]/70 border-white/10 hover:border-white/30 hover:bg-[#1e293b]/90" : "bg-white/90 border-slate-200 hover:border-red-300 shadow-sm hover:shadow-md"} backdrop-blur-md`}>
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-b from-[#a8171f] to-[#750e14] text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <FileText className="w-6 h-6" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <span className={`font-mono text-xs font-extrabold ${isDark ? "text-gray-300" : "text-slate-600"}`}>{doc.nomor}</span>
+                    <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold border ${
+                      isDark ? "bg-red-950/50 text-red-300 border-red-800/60" : "bg-red-50 text-red-700 border-red-200"
+                    }`}>
+                      {doc.subBagian}
+                    </span>
+                    {[doc.kode, doc.tipe, doc.event].map(tag => (
+                      <span key={tag} className={`px-2 py-0.5 rounded-md text-[11px] font-semibold border ${isDark ? "bg-slate-800 text-gray-200 border-slate-700" : "bg-slate-100 text-slate-700 border-slate-300"}`}>{tag}</span>
+                    ))}
+                  </div>
+                  <h3 className={`text-base font-bold leading-snug ${isDark ? "text-white" : "text-black"}`}>{doc.name}</h3>
+                  <div className={`flex items-center gap-2 mt-1.5 text-xs font-medium flex-wrap ${isDark ? "text-gray-300" : "text-slate-600"}`}>
+                    <span>{doc.date}</span><span>·</span><span>{doc.size}</span><span>·</span>
+                    <span className="flex items-center gap-1">
+                      <ShieldCheck className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                      <span>Diunggah oleh <strong className={`font-bold ${isDark ? "text-red-400" : "text-red-600"}`}>{doc.uploadedBy}</strong></span>
+                    </span>
+                    <span>·</span><span>{doc.uploadedAt}</span>
+                  </div>
+                  {doc.akses === "terbatas" && (
+                    <div className={`inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 rounded-md text-xs font-semibold ${isDark ? "bg-red-950/30 text-red-300 border border-red-800/40" : "bg-red-50 text-red-700 border border-red-200"}`}>
+                      <Lock className="w-3 h-3 text-red-500 shrink-0" />
+                      <span>Akses terbatas — hanya untuk sub bagian {doc.subBagian}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black ${isDark ? "bg-slate-800 text-gray-200 border border-slate-700" : "bg-slate-100 text-slate-700 border border-slate-300"}`}>
+                    {doc.kode}
+                  </div>
+                  <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border capitalize ${isDark ? `${darkA.bg} ${darkA.text}` : `${lightA.bg} ${lightA.text}`}`}>
+                    <AksesIcon className="w-3.5 h-3.5" />
+                    <span>{doc.akses}</span>
+                  </span>
+                  <button onClick={() => handleDownload(doc.name)} title="Unduh" className="btn-kpu-red p-2.5 rounded-xl text-white cursor-pointer active:scale-95">
+                    <Download className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => setArsipList(p => p.filter(x => x.id !== doc.id))} title="Hapus"
+                    className={`p-2.5 rounded-xl border transition-all cursor-pointer active:scale-95 ${isDark ? "border-white/10 text-gray-400 hover:border-red-500/40 hover:text-red-400 hover:bg-red-950/20" : "border-slate-200 text-slate-400 hover:border-red-300 hover:text-red-600 hover:bg-red-50"}`}>
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )
+          })
+        )}
       </div>
 
       <UnggahDokumenModal open={uploadOpen} onClose={() => setUploadOpen(false)} onSubmit={item => setArsipList(p => [item, ...p])} theme={theme} />
