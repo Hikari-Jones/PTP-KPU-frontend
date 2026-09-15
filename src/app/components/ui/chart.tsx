@@ -15,7 +15,7 @@ export function DashboardChart({ theme = "light" }: { theme?: "light" | "dark" }
 
   return (
     <Card className={`transition-all duration-200 ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
+      <CardHeader className="flex flex-col items-start gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
         <div>
           <CardTitle className={`text-base font-bold ${isDark ? "text-white" : "text-slate-900"}`}>
             Statistik Dokumen & Surat (2026)
@@ -35,8 +35,8 @@ export function DashboardChart({ theme = "light" }: { theme?: "light" | "dark" }
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className={`h-44 w-full flex items-end justify-between gap-4 pt-6 pb-2 px-2 border-b ${isDark ? "border-[#1e293b]/60" : "border-slate-200"
+      <CardContent className="pt-6">
+        <div className={`h-44 w-full flex items-end justify-between gap-4 p-4 pt-7 rounded-xl border ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"
           }`}>
           {chartData.map((item, index) => {
             const suratHeight = (item.surat / maxVal) * 100

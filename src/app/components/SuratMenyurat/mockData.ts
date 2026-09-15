@@ -83,7 +83,7 @@ export const INITIAL_SURAT_LIST: SuratItem[] = [
     nomorSurat: "088/KPU-PROV/VIII/2026",
     perihal: "Surat Edaran Pelaksanaan Evaluasi Sistem Informasi Anggaran",
     jenis: "keluar",
-    pengirim: "PERDATIN (Perencanaan, Data dan Informasi)",
+    pengirim: "RENDATIN (Perencanaan, Data dan Informasi)",
     penerima: "KPU Kabupaten / Kota se-Sulawesi Utara",
     tanggal: "2026-08-07",
     prioritas: "biasa",

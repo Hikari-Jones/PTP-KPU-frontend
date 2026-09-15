@@ -13,10 +13,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     if (variant === "ghost") variantStyles = "hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
     if (variant === "danger") variantStyles = "btn-kpu-red"
 
-    let sizeStyles = "h-9 px-4 py-2 text-sm"
-    if (size === "sm") sizeStyles = "h-8 rounded-lg px-3 text-xs"
-    if (size === "lg") sizeStyles = "h-10 rounded-xl px-8 text-base"
-    if (size === "icon") sizeStyles = "h-9 w-9 p-0 flex items-center justify-center rounded-xl"
+    let sizeStyles = "min-h-11 px-4 py-2 text-sm gap-2"
+    if (size === "sm") sizeStyles = "min-h-9 rounded-lg px-3 py-1.5 text-sm gap-2"
+    if (size === "lg") sizeStyles = "min-h-12 rounded-xl px-8 py-2 text-base gap-2"
+    if (size === "icon") sizeStyles = "h-11 w-11 p-0 flex items-center justify-center rounded-xl"
 
     return (
       <button

@@ -29,7 +29,7 @@ const SERAPAN_SUBBAGIAN_DATA = [
   { nama: "Keuangan", pct: 70, realisasi: "10.36", pagu: "14.80", color: "bg-red-600" },
   { nama: "Teknis Penyelenggaraan Pemilu", pct: 78, realisasi: "9.67", pagu: "12.40", color: "bg-red-600" },
   { nama: "SDM (Partisipasi Hubungan Masyarakat dan Sumber Daya Manusia)", pct: 64, realisasi: "5.89", pagu: "9.20", color: "bg-red-600" },
-  { nama: "PERDATIN (Perencanaan, Data dan Informasi)", pct: 68, realisasi: "5.17", pagu: "7.60", color: "bg-red-600" },
+  { nama: "RENDATIN (Perencanaan, Data dan Informasi)", pct: 68, realisasi: "5.17", pagu: "7.60", color: "bg-red-600" },
   { nama: "Hukum", pct: 65, realisasi: "3.76", pagu: "5.78", color: "bg-red-600" },
   { nama: "UMLOG (Umum dan Logistik)", pct: 55, realisasi: "4.10", pagu: "6.20", color: "bg-red-600" },
 ]
@@ -230,7 +230,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan" }: Props) {
                   <option value="Keuangan">Keuangan</option>
                   <option value="Teknis Penyelenggaraan Pemilu">Teknis Penyelenggaraan Pemilu</option>
                   <option value="SDM (Partisipasi Hubungsn Masyarakat dan Sumber Daya Manusia)">SDM</option>
-                  <option value="PERDATIN (Perencanaan, Data dan Informasi)">PERDATIN</option>
+                  <option value="RENDATIN (Perencanaan, Data dan Informasi)">RENDATIN</option>
                   <option value="Hukum">Hukum</option>
                   <option value="UMLOG (Umum dan Logistik)">UMLOG</option>
                 </select>
@@ -284,8 +284,8 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan" }: Props) {
             {/* Card 1: TOTAL PAGU ANGGARAN */}
             <Card className={`relative overflow-hidden transition-all ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
               <div className="absolute top-0 left-0 w-1.5 h-full bg-red-600"></div>
-              <CardContent className="p-5 pl-6 flex flex-col justify-center min-h-[135px] space-y-2">
-                <div>
+              <CardContent className={`m-3 ml-4 p-4 rounded-xl border flex flex-col justify-between gap-3 min-h-[132px] ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
+                <div className="pt-2">
                   <p className={`text-[11px] font-extrabold tracking-wider uppercase ${isDark ? "text-gray-300" : "text-slate-900"}`}>
                     Total Pagu Anggaran
                   </p>
@@ -295,7 +295,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan" }: Props) {
                 </div>
                 <div className={`pt-2.5 border-t flex items-center justify-between text-xs ${isDark ? "border-slate-800" : "border-slate-200"}`}>
                   <span className={`font-bold ${isDark ? "text-gray-300" : "text-black"}`}>TA 2025</span>
-                  <span className="px-2 py-0.5 rounded bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-[10px] font-bold">
+                  <span className="px-2 py-0.5 rounded bg-red-600/10 text-red-600 dark:text-red-400 border border-red-500/20 text-[10px] font-bold">
                     Alokasi PTP
                   </span>
                 </div>
@@ -305,8 +305,8 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan" }: Props) {
             {/* Card 2: TOTAL REALISASI */}
             <Card className={`relative overflow-hidden transition-all ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
               <div className="absolute top-0 left-0 w-1.5 h-full bg-red-600"></div>
-              <CardContent className="p-5 pl-6 flex flex-col justify-center min-h-[135px] space-y-2">
-                <div>
+              <CardContent className={`m-3 ml-4 p-4 rounded-xl border flex flex-col justify-between gap-3 min-h-[132px] ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
+                <div className="pt-2">
                   <p className={`text-[11px] font-extrabold tracking-wider uppercase ${isDark ? "text-gray-300" : "text-slate-900"}`}>
                     Total Realisasi
                   </p>
@@ -327,8 +327,8 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan" }: Props) {
             {/* Card 3: SISA ANGGARAN */}
             <Card className={`relative overflow-hidden transition-all ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
               <div className="absolute top-0 left-0 w-1.5 h-full bg-red-600"></div>
-              <CardContent className="p-5 pl-6 flex flex-col justify-center min-h-[135px] space-y-2">
-                <div>
+              <CardContent className={`m-3 ml-4 p-4 rounded-xl border flex flex-col justify-between gap-3 min-h-[132px] ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
+                <div className="pt-2">
                   <p className={`text-[11px] font-extrabold tracking-wider uppercase ${isDark ? "text-gray-300" : "text-slate-900"}`}>
                     Sisa Anggaran
                   </p>
@@ -346,8 +346,8 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan" }: Props) {
             {/* Card 4: PERSENTASE REALISASI */}
             <Card className={`relative overflow-hidden transition-all ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
               <div className="absolute top-0 left-0 w-1.5 h-full bg-red-600"></div>
-              <CardContent className="p-5 pl-6 flex flex-col justify-center min-h-[135px] space-y-2">
-                <div>
+              <CardContent className={`m-3 ml-4 p-4 rounded-xl border flex flex-col justify-between gap-3 min-h-[132px] ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
+                <div className="pt-2">
                   <p className={`text-[11px] font-extrabold tracking-wider uppercase ${isDark ? "text-gray-300" : "text-slate-900"}`}>
                     Persentase Realisasi
                   </p>
@@ -358,7 +358,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan" }: Props) {
                     <span className={`text-[11px] font-bold ${isDark ? "text-gray-300" : "text-black"}`}>Target: 75%</span>
                   </div>
                 </div>
-                <div className="pt-2">
+                <div className={`pt-2.5 border-t ${isDark ? "border-slate-800" : "border-slate-200"}`}>
                   <div className="w-full bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
                     <div className="bg-red-600 h-full rounded-full" style={{ width: "68.3%" }}></div>
                   </div>
@@ -384,7 +384,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan" }: Props) {
               </CardHeader>
               <CardContent className="pt-4 space-y-4">
                 {SERAPAN_SUBBAGIAN_DATA.map((row, i) => (
-                  <div key={i} className="space-y-1.5">
+                  <div key={i} className={`p-3.5 rounded-xl border space-y-2 ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
                     <div className="flex items-center justify-between text-xs">
                       <span className={`font-bold ${isDark ? "text-white" : "text-black"}`}>{row.nama}</span>
                       <span className="font-black text-red-600 dark:text-red-400">{row.pct}%</span>
@@ -502,7 +502,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan" }: Props) {
                     <option value="Keuangan">Keuangan</option>
                     <option value="Teknis Penyelenggaraan Pemilu">Teknis Penyelenggaraan Pemilu</option>
                     <option value="SDM">SDM</option>
-                    <option value="PERDATIN">PERDATIN</option>
+                    <option value="RENDATIN">RENDATIN</option>
                     <option value="Hukum">Hukum</option>
                     <option value="UMLOG">UMLOG</option>
                   </select>

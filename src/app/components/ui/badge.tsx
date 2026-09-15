@@ -5,23 +5,25 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Badge({ className = "", variant = "default", ...props }: BadgeProps) {
-  let variantStyles = "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/30 font-bold"
+  let variantStyles = "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/60 dark:text-red-300 dark:border-red-800"
 
-  if (variant === "terkirim" || variant === "success" || variant === "diterima") {
-    variantStyles = "bg-slate-900 text-white dark:bg-white dark:text-slate-950 border border-slate-700 dark:border-slate-300 font-bold shadow-xs"
+  if (variant === "terkirim" || variant === "diterima") {
+    variantStyles = "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/60 dark:text-red-300 dark:border-red-800"
+  } else if (variant === "success") {
+    variantStyles = "bg-black text-white border-black dark:bg-black dark:text-white dark:border-slate-700"
   } else if (variant === "diproses" || variant === "info") {
-    variantStyles = "bg-red-600 text-white border border-red-700 font-bold shadow-xs"
+    variantStyles = "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/60 dark:text-orange-300 dark:border-orange-800"
   } else if (variant === "warning") {
-    variantStyles = "bg-red-500/15 text-red-700 dark:text-red-400 border border-red-500/30 font-bold"
+    variantStyles = "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/60 dark:text-orange-300 dark:border-orange-800"
   } else if (variant === "draft" || variant === "secondary") {
-    variantStyles = "bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-gray-200 border border-slate-300 dark:border-slate-700 font-bold"
+    variantStyles = "bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600"
   } else if (variant === "outline") {
-    variantStyles = "bg-transparent text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-bold"
+    variantStyles = "bg-white text-slate-700 border-slate-300 dark:bg-slate-900/40 dark:text-slate-300 dark:border-slate-600"
   }
 
   return (
     <div
-      className={`inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-medium transition-colors font-mono ${variantStyles} ${className}`}
+      className={`status-badge inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold leading-5 transition-colors font-sans ${variantStyles} ${className}`}
       {...props}
     />
   )

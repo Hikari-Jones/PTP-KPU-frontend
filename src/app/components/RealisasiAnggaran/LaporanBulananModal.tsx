@@ -118,7 +118,7 @@ export function LaporanBulananModal({ isOpen, onClose, transaksiList, theme }: P
                 <option value="Keuangan">Keuangan</option>
                 <option value="Teknis Penyelenggaraan Pemilu">Teknis Penyelenggaraan Pemilu</option>
                 <option value="SDM (Partisipasi Hubungan Masyarakat dan Sumber Daya Manusia)">SDM</option>
-                <option value="PERDATIN (Perencanaan, Data dan Informasi)">PERDATIN</option>
+                <option value="RENDATIN (Perencanaan, Data dan Informasi)">RENDATIN</option>
                 <option value="Hukum">Hukum</option>
                 <option value="UMLOG (Umum dan Logistik)">UMLOG</option>
               </select>

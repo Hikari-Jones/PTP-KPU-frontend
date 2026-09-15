@@ -108,11 +108,11 @@ export function DashboardView({ theme }: { theme: "light" | "dark" }) {
       </div>
 
       {/* 4 Metric Cards - Merah, Hitam, Putih */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="dashboard-metrics grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-4">
         {/* Card 1: Total Pagu Anggaran */}
         <Card className={`relative overflow-hidden transition-all ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
           <div className="absolute top-0 left-0 w-1.5 h-full bg-red-600"></div>
-          <CardContent className="p-5 pl-6 flex items-center justify-between min-h-[110px]">
+          <CardContent className={`m-3 ml-4 p-4 rounded-xl border flex items-center justify-between min-h-[118px] ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
             <div className="flex-1 flex flex-col justify-center">
               <p className={`text-[11px] font-extrabold tracking-wider uppercase ${isDark ? "text-gray-300" : "text-slate-800"}`}>
                 Total Pagu TA 2025
@@ -131,7 +131,7 @@ export function DashboardView({ theme }: { theme: "light" | "dark" }) {
         {/* Card 2: Total Realisasi Anggaran */}
         <Card className={`relative overflow-hidden transition-all ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
           <div className="absolute top-0 left-0 w-1.5 h-full bg-red-600"></div>
-          <CardContent className="p-5 pl-6 flex items-center justify-between min-h-[110px]">
+          <CardContent className={`m-3 ml-4 p-4 rounded-xl border flex items-center justify-between min-h-[118px] ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
             <div className="flex-1 flex flex-col justify-center">
               <p className={`text-[11px] font-extrabold tracking-wider uppercase ${isDark ? "text-gray-300" : "text-slate-800"}`}>
                 Total Realisasi
@@ -150,7 +150,7 @@ export function DashboardView({ theme }: { theme: "light" | "dark" }) {
         {/* Card 3: Surat Masuk Aktif */}
         <Card className={`relative overflow-hidden transition-all ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
           <div className="absolute top-0 left-0 w-1.5 h-full bg-red-600"></div>
-          <CardContent className="p-5 pl-6 flex items-center justify-between min-h-[110px]">
+          <CardContent className={`m-3 ml-4 p-4 rounded-xl border flex items-center justify-between min-h-[118px] ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
             <div className="flex-1 flex flex-col justify-center">
               <p className={`text-[11px] font-extrabold tracking-wider uppercase ${isDark ? "text-gray-300" : "text-slate-800"}`}>
                 Surat Masuk Aktif
@@ -169,7 +169,7 @@ export function DashboardView({ theme }: { theme: "light" | "dark" }) {
         {/* Card 4: Arsip Dokumen Digital */}
         <Card className={`relative overflow-hidden transition-all ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
           <div className="absolute top-0 left-0 w-1.5 h-full bg-red-600"></div>
-          <CardContent className="p-5 pl-6 flex items-center justify-between min-h-[110px]">
+          <CardContent className={`m-3 ml-4 p-4 rounded-xl border flex items-center justify-between min-h-[118px] ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
             <div className="flex-1 flex flex-col justify-center">
               <p className={`text-[11px] font-extrabold tracking-wider uppercase ${isDark ? "text-gray-300" : "text-slate-800"}`}>
                 Arsip Terverifikasi
@@ -190,7 +190,7 @@ export function DashboardView({ theme }: { theme: "light" | "dark" }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Chart 1: Tren Realisasi Bulanan (Dipindahkan ke Dashboard) */}
         <Card className={`${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
-          <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+          <CardHeader className="flex flex-col items-start gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
             <div>
               <CardTitle className={`text-base font-bold ${isDark ? "text-white" : "text-black"}`}>
                 Tren Realisasi Anggaran Bulanan
@@ -207,7 +207,7 @@ export function DashboardView({ theme }: { theme: "light" | "dark" }) {
             </div>
           </CardHeader>
           <CardContent className="pt-6">
-            <div className="h-44 w-full flex items-end justify-between gap-1.5 pt-6 pb-2 px-1 border-b border-slate-200 dark:border-slate-800 relative">
+            <div className={`h-44 w-full flex items-end justify-between gap-1.5 p-4 pt-7 border rounded-xl relative ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
               {/* Target Line */}
               <div className="absolute left-0 right-0 top-[38%] border-b-2 border-dashed border-red-500/60 z-10 flex items-center justify-end pr-2 pointer-events-none">
                 <span className="bg-black text-white text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border border-gray-700">
@@ -249,8 +249,8 @@ export function DashboardView({ theme }: { theme: "light" | "dark" }) {
       </div>
 
       {/* Table & Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 2xl:grid-cols-3 gap-6">
+        <div className="min-w-0 2xl:col-span-2">
           <Card className={`h-full ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
             <div className={`p-4 border-b flex items-center justify-between ${isDark ? "border-[#1e293b]" : "border-slate-200"}`}>
               <h3 className={`text-sm font-bold ${isDark ? "text-white" : "text-black"}`}>Surat Menyurat Terbaru</h3>
@@ -321,7 +321,7 @@ export function DashboardView({ theme }: { theme: "light" | "dark" }) {
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={`font-bold leading-snug truncate ${isDark ? "text-white" : "text-black"}`}>
+                      <p className={`font-medium leading-relaxed ${isDark ? "text-white" : "text-black"}`}>
                         {act.text}
                       </p>
                       <span className={`text-[10px] font-semibold mt-0.5 block ${isDark ? "text-gray-400" : "text-slate-600"}`}>{act.time}</span>

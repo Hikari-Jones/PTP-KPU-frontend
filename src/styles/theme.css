@@ -1,8 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.9375rem;
+  --text-sm--line-height: 1.6;
   --color-red-50: #fdf2f2;
   --color-red-100: #fde8e8;
   --color-red-200: #fbd5d5;
@@ -53,15 +58,20 @@
 }
 
 :root {
-  color-scheme: dark light;
+  color-scheme: light;
 }
+
+html.dark { color-scheme: dark; }
 
 * {
   box-sizing: border-box;
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
   background-color: var(--bg-primary);
   background-image:
     radial-gradient(at 0% 0%, rgba(153, 27, 27, 0.15) 0px, transparent 50%),

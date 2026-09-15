@@ -6,7 +6,7 @@ import { useState } from "react"
 export function KelolaUserView({ theme }: { theme: "light" | "dark" }) {
   const isDark = theme === "dark"
   const [users, setUsers] = useState([
-    { id: 1, name: "Admin KPU Sulut", email: "admin@kpu.go.id", role: "Admin", status: "Aktif", subbagian: "PERDATIN (Perencanaan, Data dan Informasi)" },
+    { id: 1, name: "Admin KPU Sulut", email: "admin@kpu.go.id", role: "Admin", status: "Aktif", subbagian: "RENDATIN (Perencanaan, Data dan Informasi)" },
     { id: 2, name: "Ahmad Kurniawan", email: "ahmad.kurniawan@kpu.go.id", role: "Operator", status: "Aktif", subbagian: "Teknis Penyelenggaraan Pemilu" },
     { id: 3, name: "Siti Rahmawati", email: "siti.rahma@kpu.go.id", role: "Operator", status: "Aktif", subbagian: "Hukum" },
     { id: 4, name: "Budi Santoso", email: "budi.santoso@kpu.go.id", role: "Operator", status: "Non-Aktif", subbagian: "UMLOG (Umum dan Logistik)" },
@@ -63,7 +63,7 @@ export function KelolaUserView({ theme }: { theme: "light" | "dark" }) {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold ${u.status === "Aktif" ? "bg-red-600/10 text-red-600 dark:text-red-400 border border-red-500/30" : isDark ? "bg-slate-800 text-gray-400" : "bg-slate-200 text-slate-700"}`}>
+                    <span className={`status-badge px-2.5 py-0.5 rounded-full border text-[10px] font-semibold ${u.status === "Aktif" ? "bg-black text-white border-black dark:border-slate-700" : isDark ? "bg-slate-800 text-slate-300 border-slate-600" : "bg-slate-100 text-slate-700 border-slate-300"}`}>
                       {u.status}
                     </span>
                   </TableCell>

@@ -1,10 +1,9 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import {
   Search,
   FileText,
   Download,
   ShieldCheck,
-  SlidersHorizontal,
   Upload,
   X,
   FolderOpen,
@@ -37,6 +36,35 @@ interface ArsipItem {
   uploadedAt: string
 }
 
+interface DeletedArsipItem extends ArsipItem {
+  deletedAt: string
+}
+
+const ARSIP_STORAGE_KEY = "ptp_kpu_arsip_state"
+
+function readSavedArsip(): { active: ArsipItem[]; deleted: DeletedArsipItem[] } {
+  try {
+    const saved = localStorage.getItem(ARSIP_STORAGE_KEY)
+    if (saved) {
+      const parsed: unknown = JSON.parse(saved)
+      if (parsed && typeof parsed === "object" && "active" in parsed && "deleted" in parsed) {
+        const state = parsed as { active: unknown; deleted: unknown }
+        if (Array.isArray(state.active) && Array.isArray(state.deleted)) {
+          const renameSubBagian = <T extends ArsipItem>(item: T): T =>
+            item.subBagian === "PERDATIN" ? { ...item, subBagian: "RENDATIN" } : item
+          return {
+            active: (state.active as ArsipItem[]).map(renameSubBagian),
+            deleted: (state.deleted as DeletedArsipItem[]).map(renameSubBagian),
+          }
+        }
+      }
+    }
+  } catch {
+    // A damaged browser entry should not prevent the archive from opening.
+  }
+  return { active: MOCK_ARSIP, deleted: [] }
+}
+
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 const MOCK_ARSIP: ArsipItem[] = [
   {
@@ -48,7 +76,7 @@ const MOCK_ARSIP: ArsipItem[] = [
     kode: "PD",
     tipe: "Laporan",
     event: "Pilgub 2024",
-    subBagian: "PERDATIN",
+    subBagian: "RENDATIN",
     tahun: 2025,
     bulan: 1,
     date: "15 Jan 2025",
@@ -201,7 +229,7 @@ const MOCK_ARSIP: ArsipItem[] = [
     kode: "PD",
     tipe: "Laporan",
     event: "Operasional 2026",
-    subBagian: "PERDATIN",
+    subBagian: "RENDATIN",
     tahun: 2026,
     bulan: 2,
     date: "14 Feb 2026",
@@ -253,7 +281,7 @@ const BULAN_LIST = [
   { label: "Oktober", val: 10 }, { label: "November", val: 11 }, { label: "Desember", val: 12 },
 ]
 const EVENT_LIST = ["Operasional 2025", "Operasional 2026", "Pileg 2024", "Pilgub 2024", "Pilkada 2024", "Pilkada 2026"]
-const SUBBAGIAN_LIST = ["SDM", "PERDATIN", "Teknis", "Hukum", "Keuangan", "UMLOG"]
+const SUBBAGIAN_LIST = ["SDM", "RENDATIN", "Teknis", "Hukum", "Keuangan", "UMLOG"]
 
 type AksesType = "publik" | "internal" | "terbatas"
 
@@ -286,7 +314,7 @@ function UnggahDokumenModal({
   const [fileName, setFileName] = useState("")
   const [namaDokumen, setNamaDokumen] = useState("")
   const [nomorDokumen, setNomorDokumen] = useState("001/TK/KPU-SU/IX/2026")
-  const [subBagian, setSubBagian] = useState("PERDATIN")
+  const [subBagian, setSubBagian] = useState("RENDATIN")
   const [kode, setKode] = useState("TK")
   const [tipe, setTipe] = useState("Laporan")
   const [event, setEvent] = useState("Operasional 2026")
@@ -471,7 +499,9 @@ function UnggahDokumenModal({
 // ─── Main ArsipView ───────────────────────────────────────────────────────────
 export function ArsipView({ theme }: { theme: "light" | "dark" }) {
   const isDark = theme === "dark"
-  const [arsipList, setArsipList] = useState<ArsipItem[]>(MOCK_ARSIP)
+  const [arsipList, setArsipList] = useState<ArsipItem[]>(() => readSavedArsip().active)
+  const [deletedList, setDeletedList] = useState<DeletedArsipItem[]>(() => readSavedArsip().deleted)
+  const [recycleOpen, setRecycleOpen] = useState(false)
   const [search, setSearch] = useState("")
   const [uploadOpen, setUploadOpen] = useState(false)
   const [filterTahun, setFilterTahun] = useState<string>("")
@@ -479,6 +509,29 @@ export function ArsipView({ theme }: { theme: "light" | "dark" }) {
   const [filterEvent, setFilterEvent] = useState<string>("")
   const [filterSubBagian, setFilterSubBagian] = useState<string>("")
   const [filterAkses, setFilterAkses] = useState<string>("")
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(ARSIP_STORAGE_KEY, JSON.stringify({ active: arsipList, deleted: deletedList }))
+    } catch {
+      // The current session still supports recovery if browser storage is full.
+    }
+  }, [arsipList, deletedList])
+
+  const handleDelete = (doc: ArsipItem) => {
+    setArsipList(prev => prev.filter(item => item.id !== doc.id))
+    setDeletedList(prev => [{ ...doc, deletedAt: new Date().toLocaleString("id-ID") }, ...prev])
+  }
+
+  const handleRestore = (doc: DeletedArsipItem) => {
+    setDeletedList(prev => prev.filter(item => item.id !== doc.id))
+    setArsipList(prev => [doc, ...prev.filter(item => item.id !== doc.id)])
+  }
+
+  const handlePermanentDelete = (doc: DeletedArsipItem) => {
+    if (!window.confirm(`Hapus "${doc.name}" secara permanen? Dokumen ini tidak bisa dipulihkan lagi dari Recycle Bin.`)) return
+    setDeletedList(prev => prev.filter(item => item.id !== doc.id))
+  }
 
   const filtered = arsipList.filter(d => {
     const q = search.toLowerCase().trim()
@@ -530,27 +583,69 @@ export function ArsipView({ theme }: { theme: "light" | "dark" }) {
   return (
     <div className="space-y-0 animate-in fade-in duration-200">
       {/* Header */}
-      <div className="flex items-start justify-between mb-5">
+      <div className="flex flex-wrap items-start justify-between gap-4 mb-5">
         <div>
           <h1 className={`text-2xl font-bold tracking-tight my-0 ${isDark ? "text-white" : "text-black"}`}>Arsip Data</h1>
           <p className={`text-xs mt-1 font-medium ${isDark ? "text-gray-300" : "text-slate-700"}`}>
             Repositori dokumen resmi KPU Sulawesi Utara · {arsipList.length} dokumen
           </p>
         </div>
-        <button
-          onClick={() => setUploadOpen(true)}
-          className="btn-kpu-red flex items-center gap-2 px-5 py-2.5 text-white text-xs font-bold rounded-xl cursor-pointer active:scale-95"
-        >
-          <Upload className="w-4 h-4" />
-          + Unggah Dokumen
-        </button>
+        <div className="flex flex-col items-end gap-2 shrink-0">
+          <button
+            onClick={() => setUploadOpen(true)}
+            className="btn-kpu-red flex items-center gap-2 px-5 py-2.5 text-white text-xs font-bold rounded-xl cursor-pointer active:scale-95"
+          >
+            <Upload className="w-4 h-4" />
+            + Unggah Dokumen
+          </button>
+          <button
+            type="button"
+            onClick={() => setRecycleOpen(open => !open)}
+            aria-expanded={recycleOpen}
+            aria-controls="arsip-recycle-bin"
+            className={`inline-flex items-center gap-2 rounded-xl border bg-transparent px-4 py-2.5 text-sm font-semibold transition-colors ${isDark ? "border-slate-600 text-slate-200 hover:border-slate-400 hover:bg-white/5" : "border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-slate-900/5"}`}
+          >
+            <Trash2 className="w-4 h-4 text-red-500" />
+            Recycle Bin
+            <span className={`rounded-md px-1.5 py-0.5 text-xs ${isDark ? "bg-slate-800 text-slate-300" : "bg-slate-100 text-slate-600"}`}>{deletedList.length}</span>
+          </button>
+        </div>
       </div>
+
+      {recycleOpen && (
+        <section id="arsip-recycle-bin" className={`mb-5 rounded-2xl border p-4 sm:p-5 ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white border-slate-200"}`}>
+          <h2 className={`text-base font-bold ${isDark ? "text-white" : "text-slate-900"}`}>Dokumen yang dihapus</h2>
+          <p className={`mt-1 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>Pulihkan dokumen atau hapus permanen dari Recycle Bin.</p>
+          {deletedList.length === 0 ? (
+            <p className={`mt-5 rounded-xl border p-4 text-sm ${isDark ? "bg-[#111827]/60 border-white/10 text-slate-300" : "bg-slate-50 border-slate-200 text-slate-600"}`}>Recycle Bin masih kosong.</p>
+          ) : (
+            <div className="mt-5 space-y-3">
+              {deletedList.map(doc => (
+                <div key={doc.id} className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border p-4 ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
+                  <div className="min-w-0">
+                    <p className={`break-words text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>{doc.name}</p>
+                    <p className={`mt-1 text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>{doc.nomor} · Dihapus {doc.deletedAt}</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+                    <button type="button" onClick={() => handleRestore(doc)} className={`inline-flex items-center justify-center gap-2 rounded-lg border bg-transparent px-3 py-2 text-sm font-semibold ${isDark ? "border-slate-600 text-slate-200 hover:bg-white/5" : "border-slate-300 text-slate-700 hover:bg-slate-900/5"}`}>
+                      <RotateCcw className="w-4 h-4" /> Pulihkan
+                    </button>
+                    <button type="button" onClick={() => handlePermanentDelete(doc)} aria-label={`Hapus permanen ${doc.name}`} className={`inline-flex items-center justify-center gap-2 rounded-lg border bg-transparent px-3 py-2 text-sm font-semibold transition-colors ${isDark ? "border-red-800/60 text-red-300 hover:bg-red-950/30" : "border-red-200 text-red-700 hover:bg-red-50"}`}>
+                      <Trash2 className="w-4 h-4" /> Hapus Permanen
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Info Banner */}
       <div className={`flex items-start gap-3 p-3.5 rounded-xl border text-xs mb-5 ${isDark ? "bg-red-950/20 border-red-500/30 text-gray-200" : "bg-red-50/70 border-red-200 text-slate-800"}`}>
         <ShieldCheck className={`w-4 h-4 mt-0.5 shrink-0 ${isDark ? "text-red-400" : "text-red-600"}`} />
         <span className="leading-relaxed">
-          Arsip <strong>Publik</strong> dan <strong>Internal</strong> dapat diakses seluruh sub bagian (SDM, PERDATIN, Teknis, Hukum, Keuangan, UMLOG).
+          Arsip <strong>Publik</strong> dan <strong>Internal</strong> dapat diakses seluruh sub bagian (SDM, RENDATIN, Teknis, Hukum, Keuangan, UMLOG).
           Arsip <strong>Terbatas</strong> hanya dapat diakses oleh sub bagian pemilik dokumen atau Administrator.
         </span>
       </div>
@@ -566,7 +661,7 @@ export function ArsipView({ theme }: { theme: "light" | "dark" }) {
               placeholder="Cari nama dokumen, nomor surat..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className={`w-full pl-9 pr-8 py-2.5 rounded-xl text-xs font-medium border outline-none transition-colors ${
+              className={`workspace-search-input w-full pl-9 pr-8 py-2.5 rounded-xl text-xs font-medium border outline-none transition-colors ${
                 isDark
                   ? "bg-[#111827] border-white/10 text-white placeholder-gray-500 focus:border-red-500/50"
                   : "bg-slate-50 border-slate-300 text-black placeholder-slate-400 focus:border-red-400"
@@ -746,7 +841,8 @@ export function ArsipView({ theme }: { theme: "light" | "dark" }) {
             const lightA = AKSES_LIGHT[doc.akses]
             const AksesIcon = darkA.icon
             return (
-              <div key={doc.id} className={`flex items-center gap-4.5 p-4.5 sm:p-5 rounded-2xl border transition-all hover:shadow-lg ${isDark ? "bg-[#1e293b]/70 border-white/10 hover:border-white/30 hover:bg-[#1e293b]/90" : "bg-white/90 border-slate-200 hover:border-red-300 shadow-sm hover:shadow-md"} backdrop-blur-md`}>
+              <div key={doc.id} className={`p-3 rounded-2xl border transition-all hover:shadow-lg ${isDark ? "bg-[#1e293b]/70 border-white/10 hover:border-white/30 hover:bg-[#1e293b]/90" : "bg-white/90 border-slate-200 hover:border-red-300 shadow-sm hover:shadow-md"} backdrop-blur-md`}>
+              <div className={`flex flex-col lg:flex-row lg:items-center gap-4 p-4 rounded-xl border ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-b from-[#a8171f] to-[#750e14] text-white flex items-center justify-center shrink-0 shadow-xs">
                   <FileText className="w-6 h-6" />
                 </div>
@@ -778,7 +874,7 @@ export function ArsipView({ theme }: { theme: "light" | "dark" }) {
                     </div>
                   )}
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2 shrink-0 flex-wrap">
                   <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black ${isDark ? "bg-slate-800 text-gray-200 border border-slate-700" : "bg-slate-100 text-slate-700 border border-slate-300"}`}>
                     {doc.kode}
                   </div>
@@ -789,11 +885,12 @@ export function ArsipView({ theme }: { theme: "light" | "dark" }) {
                   <button onClick={() => handleDownload(doc.name)} title="Unduh" className="btn-kpu-red p-2.5 rounded-xl text-white cursor-pointer active:scale-95">
                     <Download className="w-4 h-4" />
                   </button>
-                  <button onClick={() => setArsipList(p => p.filter(x => x.id !== doc.id))} title="Hapus"
+                  <button onClick={() => handleDelete(doc)} title="Pindahkan ke Recycle Bin" aria-label={`Pindahkan ${doc.name} ke Recycle Bin`}
                     className={`p-2.5 rounded-xl border transition-all cursor-pointer active:scale-95 ${isDark ? "border-white/10 text-gray-400 hover:border-red-500/40 hover:text-red-400 hover:bg-red-950/20" : "border-slate-200 text-slate-400 hover:border-red-300 hover:text-red-600 hover:bg-red-50"}`}>
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
+              </div>
               </div>
             )
           })

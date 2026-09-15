@@ -19,7 +19,7 @@ interface DisposisiAlurPanelProps {
 export function DisposisiAlurPanel({ theme, surat, onSaveDisposisi, onUpdateStatus }: DisposisiAlurPanelProps) {
   const isDark = theme === "dark"
 
-  const [tujuanUnit, setTujuanUnit] = useState(surat.disposisi?.tujuanUnit || "PERDATIN (Perencanaan, Data dan Informasi)")
+  const [tujuanUnit, setTujuanUnit] = useState(surat.disposisi?.tujuanUnit || "RENDATIN (Perencanaan, Data dan Informasi)")
   const [catatan, setCatatan] = useState(surat.disposisi?.catatan || "")
   const [prioritas, setPrioritas] = useState<DisposisiFormState["prioritas"]>(
     (surat.disposisi?.prioritas as any) || "penting"
@@ -128,7 +128,7 @@ export function DisposisiAlurPanel({ theme, surat, onSaveDisposisi, onUpdateStat
                   className={`w-full px-3 py-2 text-xs rounded-xl border outline-none cursor-pointer ${isDark ? "bg-[#131d30] border-[#1e293b] text-white focus:border-red-500" : "bg-slate-50 border-slate-200 focus:border-red-500"
                     }`}
                 >
-                  <option value="PERDATIN (Perencanaan, Data dan Informasi)">PERDATIN (Perencanaan, Data dan Informasi)</option>
+                  <option value="RENDATIN (Perencanaan, Data dan Informasi)">RENDATIN (Perencanaan, Data dan Informasi)</option>
                   <option value="UMLOG (Umum dan Logistik)">UMLOG (Umum dan Logistik)</option>
                   <option value="Teknis Penyelenggaraan Pemilu">Teknis Penyelenggaraan Pemilu</option>
                   <option value="Hukum">Hukum</option>

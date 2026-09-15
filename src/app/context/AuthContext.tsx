@@ -24,7 +24,7 @@ const DEFAULT_USERS: UserProfile[] = [
     email: "admin@kpu.go.id",
     role: "Admin",
     jabatan: "Administrator Sistem",
-    subbagian: "PERDATIN (Perencanaan, Data dan Informasi)",
+    subbagian: "RENDATIN (Perencanaan, Data dan Informasi)",
   },
   {
     name: "Ahmad Kurniawan",
@@ -41,7 +41,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => {
     const saved = localStorage.getItem("ptp_kpu_user")
-    return saved ? JSON.parse(saved) : null
+    if (!saved) return null
+    const profile = JSON.parse(saved) as UserProfile
+    return profile.subbagian?.startsWith("PERDATIN")
+      ? { ...profile, subbagian: profile.subbagian.replace("PERDATIN", "RENDATIN") }
+      : profile
   })
 
   const isAuthenticated = !!currentUser

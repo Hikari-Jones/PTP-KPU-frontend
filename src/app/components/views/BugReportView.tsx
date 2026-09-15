@@ -41,7 +41,7 @@ export function BugReportView({ theme }: { theme: "light" | "dark" }) {
                 </div>
               </div>
 
-              <span className={`px-2.5 py-1 rounded-full text-xs font-black ${bug.status === "Selesai" ? "bg-slate-900 text-white dark:bg-white dark:text-black" : "bg-red-600 text-white"}`}>
+              <span className={`status-badge px-2.5 py-1 rounded-full border text-xs font-semibold ${bug.status === "Selesai" ? "bg-black text-white border-black dark:border-slate-700" : "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/60 dark:text-orange-300 dark:border-orange-800"}`}>
                 {bug.status}
               </span>
             </CardContent>

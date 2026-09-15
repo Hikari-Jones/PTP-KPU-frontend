@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
+import { Menu } from "lucide-react"
 import { AuthProvider, useAuth } from "./app/context/AuthContext"
 import { LoginForm } from "./app/components/auth/LoginForm"
-import { Header } from "./app/components/layout/Header"
 import { Sidebar } from "./app/components/layout/Sidebar"
 import { KiranaChatbot } from "./app/components/chatbot/KiranaChatbot"
 
@@ -27,7 +27,17 @@ function MainLayout() {
   })
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeMenu, setActiveMenu] = useState("dashboard")
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileMenuOpen(false)
+    }
+    window.addEventListener("keydown", closeOnEscape)
+    return () => window.removeEventListener("keydown", closeOnEscape)
+  }, [mobileMenuOpen])
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme)
@@ -51,7 +61,6 @@ function MainLayout() {
   }
 
   const isDark = theme === "dark"
-
   const renderContent = () => {
     switch (activeMenu) {
       case "dashboard":
@@ -103,26 +112,36 @@ function MainLayout() {
 
   return (
     <div
-      className={`flex h-screen font-sans overflow-hidden transition-colors duration-300 ${isDark ? "bg-transparent text-slate-100" : "bg-slate-100 text-slate-900"
+      className={`app-shell flex h-dvh font-sans overflow-hidden transition-colors duration-300 ${isDark ? "bg-transparent text-slate-100" : "bg-slate-100 text-slate-900"
         }`}
     >
       {/* Sidebar Navigation */}
+      {mobileMenuOpen && <button className="fixed inset-0 z-30 bg-slate-950/50 lg:hidden" aria-label="Tutup navigasi" onClick={() => setMobileMenuOpen(false)} />}
+      <div className={`app-navigation ${mobileMenuOpen ? "is-open" : ""}`}>
       <Sidebar
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         activeMenu={activeMenu}
-        onSelectMenu={(id: string) => setActiveMenu(id)}
+        onSelectMenu={(id: string) => { setActiveMenu(id); setMobileMenuOpen(false) }}
         theme={theme}
       />
+      </div>
 
       {/* Main Container */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top Header */}
-        <Header theme={theme} onToggleTheme={() => toggleTheme()} />
-
         {/* Dynamic Content Area */}
-        <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-7xl mx-auto">{renderContent()}</div>
+        <main id="main-content" className="app-content flex-1 overflow-y-auto px-4 pt-8 pb-6 sm:px-6 sm:pt-10 xl:px-8 xl:pt-12">
+          <div className="max-w-[1440px] mx-auto min-w-0">
+            <button
+              type="button"
+              onClick={() => { setSidebarCollapsed(false); setMobileMenuOpen(!mobileMenuOpen) }}
+              aria-label="Buka navigasi"
+              className="lg:hidden mb-5 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+            >
+              <Menu className="size-5" />
+            </button>
+            {renderContent()}
+          </div>
         </main>
       </div>
 

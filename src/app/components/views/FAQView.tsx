@@ -42,29 +42,35 @@ export function FAQView({ theme }: { theme: "light" | "dark" }) {
           return (
             <Card
               key={idx}
-              className={`transition-all duration-200 cursor-pointer ${isDark ? "bg-[#0d1322] border-[#1e293b] hover:border-white/20" : "bg-white border-slate-200 shadow-sm hover:shadow-md"
+              className={`transition-all duration-200 ${isDark ? "bg-[#0d1322] border-[#1e293b] hover:border-white/20" : "bg-white border-slate-200 shadow-sm hover:shadow-md"
                 }`}
-              onClick={() => setOpenIdx(isOpen ? null : idx)}
             >
-              <CardContent className="p-4 sm:p-5">
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-                    <HelpCircle className="w-4 h-4" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-3 min-h-[32px]">
-                      <h3 className={`text-sm font-bold my-0 leading-snug ${isDark ? "text-white" : "text-black"}`}>
-                        {faq.q}
-                      </h3>
-                      <div className="shrink-0 w-6 h-6 flex items-center justify-center">
-                        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180 text-red-600" : "text-slate-400"}`} />
-                      </div>
+              <CardContent className="p-3 sm:p-4">
+                <div className={`rounded-xl border p-4 sm:p-5 transition-colors ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                      <HelpCircle className="w-4 h-4" />
                     </div>
-                    {isOpen && (
-                      <div className={`mt-3 pt-3 border-t text-xs font-semibold leading-relaxed ${isDark ? "border-white/10 text-gray-300" : "border-slate-100 text-slate-700"}`}>
-                        {faq.a}
-                      </div>
-                    )}
+                    <div className="flex-1 min-w-0">
+                      <button
+                        type="button"
+                        onClick={() => setOpenIdx(isOpen ? null : idx)}
+                        aria-expanded={isOpen}
+                        className="flex w-full items-center justify-between gap-3 min-h-[32px] text-left"
+                      >
+                        <span className={`text-sm font-bold leading-snug ${isDark ? "text-white" : "text-black"}`}>
+                          {faq.q}
+                        </span>
+                        <span className="shrink-0 w-6 h-6 flex items-center justify-center">
+                          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180 text-red-600" : "text-slate-400"}`} />
+                        </span>
+                      </button>
+                      {isOpen && (
+                        <div className={`mt-3 pt-3 border-t text-xs font-semibold leading-relaxed ${isDark ? "border-white/10 text-gray-300" : "border-slate-100 text-slate-700"}`}>
+                          {faq.a}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </CardContent>

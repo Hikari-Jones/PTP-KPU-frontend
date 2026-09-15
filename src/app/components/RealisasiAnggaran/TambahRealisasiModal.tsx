@@ -177,7 +177,7 @@ export function TambahRealisasiModal({ isOpen, onClose, akunList, onSave, theme 
                 <option value="Keuangan">Keuangan</option>
                 <option value="Teknis Penyelenggaraan Pemilu">Teknis Penyelenggaraan Pemilu</option>
                 <option value="SDM (Partisipasi Hubungan Masyarakat dan Sumber Daya Manusia)">SDM (Partisipasi Hubungan Masyarakat dan Sumber Daya Manusia)</option>
-                <option value="PERDATIN (Perencanaan, Data dan Informasi)">PERDATIN (Perencanaan, Data dan Informasi)</option>
+                <option value="RENDATIN (Perencanaan, Data dan Informasi)">RENDATIN (Perencanaan, Data dan Informasi)</option>
                 <option value="Hukum">Hukum</option>
                 <option value="UMLOG (Umum dan Logistik)">UMLOG (Umum dan Logistik)</option>
               </select>

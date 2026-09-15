@@ -21,7 +21,7 @@ interface LoginFormProps {
   onToggleTheme?: () => void
 }
 
-export function LoginForm({ theme = "light", onToggleTheme }: LoginFormProps) {
+export function LoginForm({ theme = "light" }: LoginFormProps) {
   const { login } = useAuth()
   const [nip, setNip] = useState("199208052021011002")
   const [password, setPassword] = useState("123456")
@@ -76,7 +76,6 @@ export function LoginForm({ theme = "light", onToggleTheme }: LoginFormProps) {
       <div className="hidden lg:flex lg:w-[45%] xl:w-[40%] relative flex-col justify-between overflow-hidden bg-gradient-to-br from-[#3f0a0a] via-[#7f1d1d] to-red-800 text-white p-10 xl:p-14">
         <div className="absolute -right-24 -bottom-24 w-96 h-96 rounded-full bg-black/10 blur-3xl pointer-events-none" />
         <div className="absolute -left-16 top-1/3 w-72 h-72 rounded-full bg-white/5 blur-3xl pointer-events-none" />
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-300 via-amber-500 to-amber-300" />
 
         <div className="relative flex items-center gap-3">
           <div className="w-12 h-12 rounded-md bg-white/10 border border-white/25 flex items-center justify-center font-black text-lg tracking-wide">
