@@ -8,6 +8,10 @@ import { KiranaChatbot } from "./app/components/chatbot/KiranaChatbot"
 // Views
 import { DashboardView } from "./app/components/views/DashboardView"
 import { RealisasiAnggaranView } from "./app/components/RealisasiAnggaran/RealisasiAnggaranView"
+import { TahunAnggaranView } from "./app/components/RealisasiAnggaran/TahunAnggaranView"
+import { SatkerView } from "./app/components/RealisasiAnggaran/SatkerView"
+import { AkunAnggaranView } from "./app/components/RealisasiAnggaran/AkunAnggaranView"
+import { PaguAnggaranView } from "./app/components/RealisasiAnggaran/PaguAnggaranView"
 import { SuratView } from "./app/components/views/SuratView"
 import { ArsipView } from "./app/components/views/ArsipView"
 import { PengaturanView } from "./app/components/views/PengaturanView"
@@ -67,13 +71,21 @@ function MainLayout() {
         return <DashboardView theme={theme} />
       case "realisasi_anggaran":
       case "realization-summary":
-        return <RealisasiAnggaranView theme={theme} subTab="ringkasan" />
+        return <RealisasiAnggaranView theme={theme} subTab="ringkasan" onNavigate={(tab) => setActiveMenu(tab)} />
+      case "realization-ta":
+        return <TahunAnggaranView theme={theme} onNavigate={(tab) => setActiveMenu(tab)} />
+      case "realization-satker":
+        return <SatkerView theme={theme} onNavigate={(tab) => setActiveMenu(tab)} />
+      case "realization-akun":
+        return <AkunAnggaranView theme={theme} onNavigate={(tab) => setActiveMenu(tab)} />
+      case "realization-pagu":
+        return <PaguAnggaranView theme={theme} onNavigate={(tab) => setActiveMenu(tab)} />
       case "realization-transactions":
-        return <RealisasiAnggaranView theme={theme} subTab="transaksi" />
+        return <RealisasiAnggaranView theme={theme} subTab="transaksi" onNavigate={(tab) => setActiveMenu(tab)} />
       case "realization-reports":
-        return <RealisasiAnggaranView theme={theme} subTab="laporan" />
+        return <RealisasiAnggaranView theme={theme} subTab="laporan" onNavigate={(tab) => setActiveMenu(tab)} />
       case "realization-verification":
-        return <RealisasiAnggaranView theme={theme} subTab="verifikasi" />
+        return <RealisasiAnggaranView theme={theme} subTab="verifikasi" onNavigate={(tab) => setActiveMenu(tab)} />
       case "surat":
       case "surat-summary":
         return <SuratView theme={theme} subTab="overview" />

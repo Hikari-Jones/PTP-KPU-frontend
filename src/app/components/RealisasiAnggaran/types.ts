@@ -4,6 +4,9 @@ export interface AkunAnggaran {
   pagu: number
   realisasi: number
   sisa: number
+  divisi?: string
+  persentase?: number
+  subbagian?: string
 }
 
 export interface TransaksiRealisasi {
@@ -18,4 +21,24 @@ export interface TransaksiRealisasi {
   buktiFile: string | null
   status: "Draft" | "Menunggu Verifikasi" | "Disetujui" | "Ditolak"
   periode: string
+}
+
+export interface SatkerItem {
+  id: string
+  kode: string
+  nama: string
+  kepala: string
+  pagu: number
+  realisasi: number
+  status: string
+}
+
+export interface TahunAnggaranItem {
+  id: string
+  tahun: number
+  status: "Aktif" | "Ditutup" | "Draft"
+  tanggalMulai: string
+  tanggalSelesai: string
+  deskripsi: string
+  dibuatOleh: string
 }
