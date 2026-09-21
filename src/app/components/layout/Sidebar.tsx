@@ -59,14 +59,13 @@ export function Sidebar({ collapsed, onToggleCollapse, activeMenu, onSelectMenu,
   }, [isSuratActive])
 
   const realisasiSubmenus = [
-    { id: "realization-summary", label: "Dashboard / Overview" },
+    { id: "realization-summary", label: "Overview" },
     { id: "realization-ta", label: "Tahun Anggaran" },
     { id: "realization-satker", label: "Satker" },
     { id: "realization-akun", label: "Akun Anggaran" },
     { id: "realization-pagu", label: "Pagu Anggaran" },
-    { id: "realization-transactions", label: "Daftar Transaksi" },
+    { id: "realization-input", label: "Input Realisasi" },
     { id: "realization-reports", label: "Laporan Bulanan" },
-    { id: "realization-verification", label: "Verifikasi Dokumen" },
   ]
 
   const suratSubmenus = [
@@ -74,7 +73,6 @@ export function Sidebar({ collapsed, onToggleCollapse, activeMenu, onSelectMenu,
     { id: "surat-keluar", label: "Surat Keluar" },
     { id: "surat-tugas", label: "Surat Tugas" },
     { id: "surat-klasifikasi", label: "Kode Klasifikasi" },
-    { id: "surat-simulator", label: "Simulator Concurrency" },
   ]
 
   const adminMenu = [

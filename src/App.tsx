@@ -12,6 +12,8 @@ import { TahunAnggaranView } from "./app/components/RealisasiAnggaran/TahunAngga
 import { SatkerView } from "./app/components/RealisasiAnggaran/SatkerView"
 import { AkunAnggaranView } from "./app/components/RealisasiAnggaran/AkunAnggaranView"
 import { PaguAnggaranView } from "./app/components/RealisasiAnggaran/PaguAnggaranView"
+import { InputRealisasiView } from "./app/components/RealisasiAnggaran/InputRealisasiView"
+import { LaporanBulananView } from "./app/components/RealisasiAnggaran/LaporanBulananView"
 import { SuratView } from "./app/components/views/SuratView"
 import { ArsipView } from "./app/components/views/ArsipView"
 import { PengaturanView } from "./app/components/views/PengaturanView"
@@ -80,24 +82,20 @@ function MainLayout() {
         return <AkunAnggaranView theme={theme} onNavigate={(tab) => setActiveMenu(tab)} />
       case "realization-pagu":
         return <PaguAnggaranView theme={theme} onNavigate={(tab) => setActiveMenu(tab)} />
-      case "realization-transactions":
-        return <RealisasiAnggaranView theme={theme} subTab="transaksi" onNavigate={(tab) => setActiveMenu(tab)} />
+      case "realization-input":
+        return <InputRealisasiView theme={theme} />
       case "realization-reports":
-        return <RealisasiAnggaranView theme={theme} subTab="laporan" onNavigate={(tab) => setActiveMenu(tab)} />
-      case "realization-verification":
-        return <RealisasiAnggaranView theme={theme} subTab="verifikasi" onNavigate={(tab) => setActiveMenu(tab)} />
+        return <LaporanBulananView theme={theme} />
       case "surat":
       case "surat-summary":
-        return <SuratView theme={theme} subTab="overview" />
+        return <SuratView key="surat-overview" theme={theme} subTab="overview" />
       case "surat-keluar":
-        return <SuratView theme={theme} subTab="surat-keluar" />
+        return <SuratView key="surat-keluar" theme={theme} subTab="surat-keluar" />
       case "surat-tugas":
       case "surat-masuk":
-        return <SuratView theme={theme} subTab="surat-tugas" />
+        return <SuratView key="surat-tugas" theme={theme} subTab="surat-tugas" />
       case "surat-klasifikasi":
-        return <SuratView theme={theme} subTab="klasifikasi" />
-      case "surat-simulator":
-        return <SuratView theme={theme} subTab="simulator" />
+        return <SuratView key="surat-klasifikasi" theme={theme} subTab="klasifikasi" />
       case "arsip":
         return <ArsipView theme={theme} />
       case "pengaturan":

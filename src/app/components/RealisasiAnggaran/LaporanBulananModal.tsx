@@ -162,7 +162,7 @@ export function LaporanBulananModal({ isOpen, onClose, transaksiList, theme }: P
                       <TableRow
                         key={item.id}
                         className={
-                          isDark ? "border-b border-white/20 hover:bg-white/[0.05]" : "border-b border-slate-100 hover:bg-slate-50"
+                          isDark ? "border-b border-white/20" : "border-b border-slate-100"
                         }
                       >
                         <TableCell className="font-mono text-xs font-bold text-red-600 dark:text-red-400">{item.noDokumen}</TableCell>
@@ -173,7 +173,7 @@ export function LaporanBulananModal({ isOpen, onClose, transaksiList, theme }: P
                         </TableCell>
                         <TableCell className={`text-xs font-bold ${isDark ? "text-gray-200" : "text-black"}`}>{item.subbagian}</TableCell>
                         <TableCell className={`font-bold text-xs max-w-xs truncate ${isDark ? "text-white" : "text-black"}`}>{item.usulanKegiatan}</TableCell>
-                        <TableCell className="text-xs font-black text-red-600 dark:text-red-500 whitespace-nowrap">
+                        <TableCell className="text-xs font-black text-red-600 dark:text-red-400 whitespace-nowrap">
                           {formatRupiah(item.jumlah)}
                         </TableCell>
                         <TableCell>
@@ -206,7 +206,7 @@ export function LaporanBulananModal({ isOpen, onClose, transaksiList, theme }: P
             }`}
         >
           <span>Total Realisasi Terfilter ({filteredList.length} Transaksi):</span>
-          <span className="text-base font-black text-red-600 dark:text-red-500">{formatRupiah(totalJumlah)}</span>
+          <span className="text-base font-black text-red-600 dark:text-red-400">{formatRupiah(totalJumlah)}</span>
         </div>
       </div>
     </div>

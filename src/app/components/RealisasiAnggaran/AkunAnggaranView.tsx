@@ -23,7 +23,8 @@ const INITIAL_AKUN_DATA: AkunAnggaran[] = [
   {
     kode: "5211",
     nama: "Belanja Gaji dan Tunjangan",
-    divisi: "Div. Keuangan, Umum, R...",
+    tahun: 2025,
+    subbagian: "Keuangan",
     pagu: 8500000000,
     realisasi: 6375000000,
     sisa: 2125000000,
@@ -32,7 +33,8 @@ const INITIAL_AKUN_DATA: AkunAnggaran[] = [
   {
     kode: "5212",
     nama: "Belanja Honorarium",
-    divisi: "Div. Teknis Penyelenggar...",
+    tahun: 2025,
+    subbagian: "Teknis",
     pagu: 3200000000,
     realisasi: 2560000000,
     sisa: 640000000,
@@ -41,7 +43,8 @@ const INITIAL_AKUN_DATA: AkunAnggaran[] = [
   {
     kode: "5221",
     nama: "Belanja Barang Operasional",
-    divisi: "Div. Keuangan, Umum, R...",
+    tahun: 2025,
+    subbagian: "UMLOG",
     pagu: 4800000000,
     realisasi: 2880000000,
     sisa: 1920000000,
@@ -50,7 +53,8 @@ const INITIAL_AKUN_DATA: AkunAnggaran[] = [
   {
     kode: "5222",
     nama: "Belanja Barang Non Operasional",
-    divisi: "Div. Teknis Penyelenggar...",
+    tahun: 2025,
+    subbagian: "Teknis",
     pagu: 6500000000,
     realisasi: 4225000000,
     sisa: 2275000000,
@@ -59,7 +63,8 @@ const INITIAL_AKUN_DATA: AkunAnggaran[] = [
   {
     kode: "5231",
     nama: "Belanja Pemeliharaan",
-    divisi: "Div. Sosialisasi, Pendidik...",
+    tahun: 2025,
+    subbagian: "SDM",
     pagu: 2100000000,
     realisasi: 1260000000,
     sisa: 840000000,
@@ -68,7 +73,8 @@ const INITIAL_AKUN_DATA: AkunAnggaran[] = [
   {
     kode: "5241",
     nama: "Belanja Perjalanan Dinas",
-    divisi: "Div. Hukum dan Pengaw...",
+    tahun: 2025,
+    subbagian: "Hukum",
     pagu: 4200000000,
     realisasi: 3150000000,
     sisa: 1050000000,
@@ -77,7 +83,8 @@ const INITIAL_AKUN_DATA: AkunAnggaran[] = [
   {
     kode: "5251",
     nama: "Belanja Jasa",
-    divisi: "Div. Perencanaan, Data d...",
+    tahun: 2026,
+    subbagian: "RENDATIN",
     pagu: 7800000000,
     realisasi: 5460000000,
     sisa: 2340000000,
@@ -86,7 +93,8 @@ const INITIAL_AKUN_DATA: AkunAnggaran[] = [
   {
     kode: "5311",
     nama: "Belanja Modal Peralatan",
-    divisi: "Div. Keuangan, Umum, R...",
+    tahun: 2026,
+    subbagian: "UMLOG",
     pagu: 3680000000,
     realisasi: 2576000000,
     sisa: 1104000000,
@@ -95,7 +103,8 @@ const INITIAL_AKUN_DATA: AkunAnggaran[] = [
   {
     kode: "5321",
     nama: "Belanja Modal Gedung",
-    divisi: "Div. Sosialisasi, Pendidik...",
+    tahun: 2026,
+    subbagian: "SDM",
     pagu: 5000000000,
     realisasi: 2760000000,
     sisa: 2240000000,
@@ -103,11 +112,11 @@ const INITIAL_AKUN_DATA: AkunAnggaran[] = [
   },
 ]
 
-export function AkunAnggaranView({ theme, onNavigate }: Props) {
+export function AkunAnggaranView({ theme }: Props) {
   const isDark = theme === "dark"
   const [akunList, setAkunList] = useState<AkunAnggaran[]>(INITIAL_AKUN_DATA)
   const [selectedTA, setSelectedTA] = useState("Semua TA")
-  const [selectedDivisi, setSelectedDivisi] = useState("Semua Divisi")
+  const [selectedSubbagian, setSelectedSubbagian] = useState("Semua Subbagian")
   const [searchQuery, setSearchQuery] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState<AkunAnggaran | null>(null)
@@ -115,7 +124,8 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
   // Form states
   const [formKode, setFormKode] = useState("")
   const [formNama, setFormNama] = useState("")
-  const [formDivisi, setFormDivisi] = useState("Div. Keuangan, Umum, R...")
+  const [formSubbagian, setFormSubbagian] = useState("Keuangan")
+  const [formTahun, setFormTahun] = useState(2025)
   const [formPagu, setFormPagu] = useState<number>(1000000000)
 
   const formatRupiah = (val: number) => {
@@ -126,10 +136,11 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
     const matchSearch =
       item.kode.includes(searchQuery) ||
       item.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.divisi && item.divisi.toLowerCase().includes(searchQuery.toLowerCase()))
-    const matchDivisi =
-      selectedDivisi === "Semua Divisi" || (item.divisi && item.divisi.includes(selectedDivisi))
-    return matchSearch && matchDivisi
+      (item.subbagian && item.subbagian.toLowerCase().includes(searchQuery.toLowerCase()))
+    const matchSubbagian =
+      selectedSubbagian === "Semua Subbagian" || item.subbagian === selectedSubbagian
+    const matchTA = selectedTA === "Semua TA" || item.tahun === Number(selectedTA.replace("TA ", ""))
+    return matchSearch && matchSubbagian && matchTA
   })
 
   const totalPagu = akunList.reduce((acc, curr) => acc + curr.pagu, 0)
@@ -144,7 +155,8 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
     setSelectedItem(null)
     setFormKode("")
     setFormNama("")
-    setFormDivisi("Div. Keuangan, Umum, R...")
+    setFormSubbagian("Keuangan")
+    setFormTahun(selectedTA === "Semua TA" ? 2025 : Number(selectedTA.replace("TA ", "")))
     setFormPagu(1000000000)
     setIsModalOpen(true)
   }
@@ -153,7 +165,8 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
     setSelectedItem(item)
     setFormKode(item.kode)
     setFormNama(item.nama)
-    setFormDivisi(item.divisi || "Div. Keuangan, Umum, R...")
+    setFormSubbagian(item.subbagian || "Keuangan")
+    setFormTahun(item.tahun || 2025)
     setFormPagu(item.pagu)
     setIsModalOpen(true)
   }
@@ -168,7 +181,8 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
                 ...a,
                 kode: formKode,
                 nama: formNama,
-                divisi: formDivisi,
+                subbagian: formSubbagian,
+                tahun: formTahun,
                 pagu: Number(formPagu),
                 sisa: Number(formPagu) - a.realisasi,
                 persentase: a.pagu > 0 ? Math.round((a.realisasi / Number(formPagu)) * 100) : 0,
@@ -180,7 +194,8 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
       const newItem: AkunAnggaran = {
         kode: formKode,
         nama: formNama,
-        divisi: formDivisi,
+        subbagian: formSubbagian,
+        tahun: formTahun,
         pagu: Number(formPagu),
         realisasi: 0,
         sisa: Number(formPagu),
@@ -192,9 +207,9 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
   }
 
   const handleExport = () => {
-    let csv = "Kode,Nama Akun,Divisi,Pagu Anggaran,Realisasi,Sisa,Serapan (%)\n"
+    let csv = "Tahun,Kode,Nama Akun,Subbagian,Pagu Anggaran,Realisasi,Sisa,Serapan (%)\n"
     filteredData.forEach((row) => {
-      csv += `"${row.kode}","${row.nama}","${row.divisi}","${row.pagu}","${row.realisasi}","${row.sisa}","${row.persentase}%"\n`
+      csv += `"${row.tahun}","${row.kode}","${row.nama}","${row.subbagian}","${row.pagu}","${row.realisasi}","${row.sisa}","${row.persentase}%"\n`
     })
     const blob = new Blob([csv], { type: "text/csv" })
     const url = URL.createObjectURL(blob)
@@ -209,30 +224,17 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Breadcrumb Navigation */}
-      <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
-        <button
-          onClick={() => onNavigate && onNavigate("dashboard")}
-          className="hover:text-red-500 cursor-pointer transition-colors"
-        >
-          Dashboard
-        </button>
-        <span>&gt;</span>
-        <span>Master Data</span>
-        <span>&gt;</span>
-        <span className={isDark ? "text-white font-bold" : "text-slate-900 font-bold"}>
-          Akun Anggaran
-        </span>
-      </div>
-
       {/* Header & Actions */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div>
-          <h1 className={`text-2xl font-bold tracking-tight my-0 ${isDark ? "text-white" : "text-black"}`}>
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-red-600 dark:text-red-400">
+            Realisasi Anggaran
+          </p>
+          <h1 className={`text-xl font-bold tracking-tight my-0 ${isDark ? "text-white" : "text-black"}`}>
             Akun Anggaran
           </h1>
           <p className={`text-xs mt-1 font-medium ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-            {filteredData.length} akun terdaftar — Tahun Anggaran 2025
+            {filteredData.length} akun terdaftar — {selectedTA === "Semua TA" ? "Semua Tahun Anggaran" : `Tahun Anggaran ${selectedTA.replace("TA ", "")}`}
           </p>
         </div>
 
@@ -254,7 +256,7 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
             className="btn-kpu-red px-4 py-2 text-white font-bold text-xs rounded-xl flex items-center gap-2 cursor-pointer transition-all active:scale-95"
           >
             <Plus className="w-4 h-4" />
-            <span>+ Tambah Akun</span>
+            <span>Tambah Akun</span>
           </button>
         </div>
       </div>
@@ -280,20 +282,21 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
 
         <div className="relative">
           <select
-            value={selectedDivisi}
-            onChange={(e) => setSelectedDivisi(e.target.value)}
+            value={selectedSubbagian}
+            onChange={(e) => setSelectedSubbagian(e.target.value)}
             className={`appearance-none font-bold text-xs px-3.5 py-2 pr-8 rounded-xl border cursor-pointer outline-none ${
               isDark
                 ? "bg-[#131b2e] border-[#1e293b] text-white hover:border-red-500"
                 : "bg-slate-50 border-slate-300 text-black hover:border-red-500"
             }`}
           >
-            <option value="Semua Divisi">Semua Divisi</option>
-            <option value="Keuangan">Div. Keuangan, Umum, Logistik</option>
-            <option value="Teknis">Div. Teknis Penyelenggaraan</option>
-            <option value="Sosialisasi">Div. Sosialisasi & SDM</option>
-            <option value="Perencanaan">Div. Perencanaan & Data</option>
-            <option value="Hukum">Div. Hukum dan Pengawasan</option>
+            <option value="Semua Subbagian">Semua Subbagian</option>
+            <option value="SDM">SDM</option>
+            <option value="RENDATIN">RENDATIN</option>
+            <option value="Teknis">Teknis</option>
+            <option value="Hukum">Hukum</option>
+            <option value="Keuangan">Keuangan</option>
+            <option value="UMLOG">UMLOG</option>
           </select>
           <ChevronDown className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
         </div>
@@ -318,8 +321,8 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
       <div className={`flex items-center justify-between text-xs px-1 ${
         isDark ? "text-gray-300" : "text-slate-700"
       }`}>
-        <span className="font-semibold">{filteredData.length} akun · {selectedTA}</span>
-        <span className="font-bold text-red-600 dark:text-red-400 font-mono">
+        <span className="font-semibold">{filteredData.length} akun • {selectedTA}</span>
+        <span className="font-bold text-red-600 dark:text-red-400">
           Total Pagu: Rp {(totalPagu / 1000000000).toFixed(2)} M
         </span>
       </div>
@@ -329,21 +332,22 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
         <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow className={isDark ? "border-b border-white/20 bg-[#0a0e1a]" : "border-b border-slate-200 bg-slate-100"}>
-                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-white" : "text-black"}`}>KODE</TableHead>
-                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-white" : "text-black"}`}>NAMA AKUN</TableHead>
-                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-white" : "text-black"}`}>DIVISI</TableHead>
-                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-white" : "text-black"}`}>PAGU ANGGARAN</TableHead>
-                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-white" : "text-black"}`}>REALISASI</TableHead>
-                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-white" : "text-black"}`}>SISA</TableHead>
-                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-white" : "text-black"}`}>SERAPAN</TableHead>
-                <TableHead className={`text-[11px] font-extrabold uppercase text-center ${isDark ? "text-white" : "text-black"}`}>AKSI</TableHead>
+              <TableRow className={isDark ? "border-b border-white/10 bg-[#0a0f1d]" : "border-b border-slate-200 bg-slate-50"}>
+                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-gray-400" : "text-slate-600"}`}>KODE</TableHead>
+                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-gray-400" : "text-slate-600"}`}>TA</TableHead>
+                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-gray-400" : "text-slate-600"}`}>NAMA AKUN</TableHead>
+                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-gray-400" : "text-slate-600"}`}>SUBBAGIAN</TableHead>
+                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-gray-400" : "text-slate-600"}`}>PAGU ANGGARAN</TableHead>
+                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-gray-400" : "text-slate-600"}`}>REALISASI</TableHead>
+                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-gray-400" : "text-slate-600"}`}>SISA</TableHead>
+                <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-gray-400" : "text-slate-600"}`}>SERAPAN</TableHead>
+                <TableHead className={`text-[11px] font-extrabold uppercase text-center ${isDark ? "text-gray-400" : "text-slate-600"}`}>AKSI</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredData.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-xs text-gray-400">
+                  <TableCell colSpan={9} className="text-center py-8 text-xs text-gray-400">
                     Tidak ada akun anggaran yang sesuai dengan pencarian.
                   </TableCell>
                 </TableRow>
@@ -351,26 +355,29 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
                 filteredData.map((row) => (
                   <TableRow
                     key={row.kode}
-                    className={`border-b transition-colors ${
-                      isDark ? "border-white/10 hover:bg-white/[0.04]" : "border-slate-100 hover:bg-slate-50"
+                    className={`border-b ${
+                      isDark ? "border-white/10" : "border-slate-100"
                     }`}
                   >
                     <TableCell className="font-mono text-xs font-bold text-red-600 dark:text-red-400 whitespace-nowrap">
                       {row.kode}
                     </TableCell>
-                    <TableCell className={`text-xs font-bold ${isDark ? "text-white" : "text-black"}`}>
+                    <TableCell className={`text-xs font-bold whitespace-nowrap ${isDark ? "text-gray-300" : "text-slate-600"}`}>
+                      {row.tahun}
+                    </TableCell>
+                    <TableCell className={`text-xs font-semibold ${isDark ? "text-gray-200" : "text-slate-800"}`}>
                       {row.nama}
                     </TableCell>
                     <TableCell className={`text-xs font-medium max-w-[160px] truncate ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-                      {row.divisi}
+                      {row.subbagian}
                     </TableCell>
-                    <TableCell className={`text-xs font-bold whitespace-nowrap ${isDark ? "text-white" : "text-black"}`}>
+                    <TableCell className={`text-xs font-semibold whitespace-nowrap ${isDark ? "text-gray-200" : "text-slate-800"}`}>
                       {formatRupiah(row.pagu)}
                     </TableCell>
-                    <TableCell className="text-xs font-mono font-bold text-red-600 dark:text-red-500 whitespace-nowrap">
+                    <TableCell className="text-xs font-semibold text-red-600 dark:text-red-400 whitespace-nowrap">
                       {formatRupiah(row.realisasi)}
                     </TableCell>
-                    <TableCell className={`text-xs font-mono font-bold whitespace-nowrap ${
+                    <TableCell className={`text-xs font-semibold whitespace-nowrap ${
                       isDark ? "text-gray-300" : "text-slate-800"
                     }`}>
                       {formatRupiah(row.sisa)}
@@ -379,15 +386,11 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
                       <div className="flex items-center gap-2 min-w-[100px]">
                         <div className="flex-1 bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
                           <div
-                            className={`h-full rounded-full ${
-                              row.persentase && row.persentase >= 80 ? "bg-emerald-500" : "bg-red-600"
-                            }`}
+                            className="h-full rounded-full bg-red-600"
                             style={{ width: `${row.persentase || 0}%` }}
                           ></div>
                         </div>
-                        <span className={`text-[11px] font-mono font-bold ${
-                          row.persentase && row.persentase >= 80 ? "text-emerald-500" : "text-red-600 dark:text-red-400"
-                        }`}>
+                        <span className="text-[11px] font-bold text-red-600 dark:text-red-400">
                           {row.persentase}%
                         </span>
                       </div>
@@ -397,7 +400,7 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
                         <button
                           onClick={() => handleOpenEdit(row)}
                           title="Edit Akun"
-                          className="p-1.5 rounded-lg hover:bg-blue-500/20 text-blue-500 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg hover:bg-red-500/20 text-red-600 dark:text-red-400 transition-colors cursor-pointer"
                         >
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
@@ -463,6 +466,20 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
 
             <form onSubmit={handleFormSubmit} className="p-5 space-y-4 text-xs">
               <div>
+                <label className="block font-semibold mb-1">Tahun Anggaran</label>
+                <select
+                  value={formTahun}
+                  onChange={(e) => setFormTahun(Number(e.target.value))}
+                  className={`w-full px-3 py-2 rounded-xl border outline-none font-semibold cursor-pointer ${
+                    isDark ? "bg-[#131b2e] border-[#1e293b] text-white focus:border-red-500" : "bg-slate-50 border-slate-300 text-black focus:border-red-500"
+                  }`}
+                >
+                  <option value={2025}>TA 2025</option>
+                  <option value={2026}>TA 2026</option>
+                </select>
+              </div>
+
+              <div>
                 <label className="block font-semibold mb-1">Kode Akun (4 Digit)</label>
                 <input
                   type="text"
@@ -491,19 +508,20 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
               </div>
 
               <div>
-                <label className="block font-semibold mb-1">Divisi Pengampu</label>
+                <label className="block font-semibold mb-1">Subbagian Pengampu</label>
                 <select
-                  value={formDivisi}
-                  onChange={(e) => setFormDivisi(e.target.value)}
+                  value={formSubbagian}
+                  onChange={(e) => setFormSubbagian(e.target.value)}
                   className={`w-full px-3 py-2 rounded-xl border outline-none font-semibold cursor-pointer ${
                     isDark ? "bg-[#131b2e] border-[#1e293b] text-white focus:border-red-500" : "bg-slate-50 border-slate-300 text-black focus:border-red-500"
                   }`}
                 >
-                  <option value="Div. Keuangan, Umum, R...">Div. Keuangan, Umum, Logistik</option>
-                  <option value="Div. Teknis Penyelenggar...">Div. Teknis Penyelenggaraan</option>
-                  <option value="Div. Sosialisasi, Pendidik...">Div. Sosialisasi, Pendidikan Pemilih & SDM</option>
-                  <option value="Div. Perencanaan, Data d...">Div. Perencanaan, Data & Informasi</option>
-                  <option value="Div. Hukum dan Pengaw...">Div. Hukum dan Pengawasan</option>
+                  <option value="SDM">SDM</option>
+                  <option value="RENDATIN">RENDATIN</option>
+                  <option value="Teknis">Teknis</option>
+                  <option value="Hukum">Hukum</option>
+                  <option value="Keuangan">Keuangan</option>
+                  <option value="UMLOG">UMLOG</option>
                 </select>
               </div>
 
@@ -516,7 +534,7 @@ export function AkunAnggaranView({ theme, onNavigate }: Props) {
                   step={1000000}
                   value={formPagu}
                   onChange={(e) => setFormPagu(Number(e.target.value))}
-                  className={`w-full px-3 py-2 rounded-xl border outline-none font-mono font-bold ${
+                  className={`w-full px-3 py-2 rounded-xl border outline-none font-bold ${
                     isDark ? "bg-[#131b2e] border-[#1e293b] text-white focus:border-red-500" : "bg-slate-50 border-slate-300 text-black focus:border-red-500"
                   }`}
                 />

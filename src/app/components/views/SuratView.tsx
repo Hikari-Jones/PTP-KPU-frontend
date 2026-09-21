@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import {
   FileText,
   Briefcase,
@@ -6,7 +6,6 @@ import {
   Plus,
   CheckCircle2,
   AlertCircle,
-  Zap,
   Search,
   RefreshCw,
   Send,
@@ -327,16 +326,15 @@ export function SuratView({ theme = "dark", subTab = "overview" }: SuratViewProp
 
   const getInitialTab = (
     tab: string
-  ): "overview" | "surat-keluar" | "surat-tugas" | "klasifikasi" | "simulator" => {
+  ): "overview" | "surat-keluar" | "surat-tugas" | "klasifikasi" => {
     if (tab === "keluar" || tab === "surat-keluar") return "surat-keluar"
     if (tab === "surat-tugas" || tab === "masuk") return "surat-tugas"
     if (tab === "klasifikasi" || tab === "surat-klasifikasi") return "klasifikasi"
-    if (tab === "simulator" || tab === "surat-simulator") return "simulator"
     return "overview"
   }
 
   const [activeTab, setActiveTab] = useState<
-    "overview" | "surat-keluar" | "surat-tugas" | "klasifikasi" | "simulator"
+    "overview" | "surat-keluar" | "surat-tugas" | "klasifikasi"
   >(() => getInitialTab(subTab))
 
   const [suratList, setSuratList] = useState<SuratKeluar[]>(INITIAL_SURAT_KELUAR_DATA)
@@ -352,24 +350,6 @@ export function SuratView({ theme = "dark", subTab = "overview" }: SuratViewProp
   const [formPerihal, setFormPerihal] = useState<string>("")
   const [formTujuan, setFormTujuan] = useState<string>("")
   const [formIsi, setFormIsi] = useState<string>("")
-
-  // Concurrency Simulator State
-  const [simResults, setSimResults] = useState<
-    Array<{ user: string; role: string; number: string; seq: number; time: string }>
-  >([
-    { user: "Ahmad Kurniawan", role: "Staf Subbag Data & Informasi", number: "008/PL.02.1-SD/71/IX/2026", seq: 8, time: "10:14:02.102" },
-    { user: "Meyti Rumondor", role: "Staf Subbag Teknis Pemilu", number: "009/PL.01.1-SD/71/IX/2026", seq: 9, time: "10:14:02.118" },
-    { user: "Frangky Tumbelaka", role: "Staf Subbag Hukum", number: "010/HK.01.1-SD/71/IX/2026", seq: 10, time: "10:14:02.134" },
-    { user: "Christian Palendeng", role: "Staf Subbag Keuangan", number: "011/KU.01.3-SD/71/IX/2026", seq: 11, time: "10:14:02.155" },
-  ])
-  const [isSimulating, setIsSimulating] = useState<boolean>(false)
-
-  // Sync when subTab prop changes (controlled by sidebar navigation)
-  useEffect(() => {
-    if (subTab) {
-      setActiveTab(getInitialTab(subTab))
-    }
-  }, [subTab])
 
   const showToast = (msg: string) => {
     setNotification(msg)
@@ -409,42 +389,6 @@ export function SuratView({ theme = "dark", subTab = "overview" }: SuratViewProp
     showToast(`Nomor Surat Resmi Berhasil Diterbitkan: ${updated.nomor_surat}`)
   }
 
-  const runConcurrencySimulator = async () => {
-    setIsSimulating(true)
-    setSimResults([])
-    await new Promise((r) => setTimeout(r, 600))
-
-    const simulatedCalls = [
-      { user: "Ahmad Kurniawan", role: "Staf Subbag Data & Informasi", klass: "PL.02.1" },
-      { user: "Meyti Rumondor", role: "Staf Subbag Teknis Pemilu", klass: "PL.01.1" },
-      { user: "Frangky Tumbelaka", role: "Staf Subbag Hukum", klass: "HK.01.1" },
-      { user: "Christian Palendeng", role: "Staf Subbag Keuangan", klass: "KU.01.3" },
-      { user: "Novita Sambuaga", role: "Staf Subbag Umum & Logistik", klass: "RT.01.1" },
-      { user: "Rezky Kolondam", role: "Staf Subbag SDM & Parmas", klass: "HR.01.2" },
-      { user: "Ester Mandagi", role: "Operator IT Sirekap KPU Sulut", klass: "IT.01.1" },
-      { user: "Drs. Meidy Tinangon", role: "Sekretariat KPU Sulut", klass: "PL.02.2" },
-    ]
-
-    const currentMax = suratList.filter((s) => s.nomor_urut).length + 1
-    const newResults: Array<{ user: string; role: string; number: string; seq: number; time: string }> = []
-
-    simulatedCalls.forEach((item, idx) => {
-      const seq = currentMax + idx
-      const numStr = `00${seq}/${item.klass}-SD/71/IX/2026`
-      const now = new Date()
-      newResults.push({
-        user: item.user,
-        role: item.role,
-        number: numStr,
-        seq: seq,
-        time: `${now.toTimeString().split(" ")[0]}.${100 + idx * 19}`,
-      })
-    })
-
-    setSimResults(newResults)
-    setIsSimulating(false)
-  }
-
   const filteredSurat = suratList.filter(
     (s) =>
       s.perihal.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -463,6 +407,13 @@ export function SuratView({ theme = "dark", subTab = "overview" }: SuratViewProp
     { name: "Hukum & Advokasi (HK)", count: 1, pct: 10 },
     { name: "SDM & Kepegawaian (HR)", count: 1, pct: 10 },
   ]
+
+  const pageTitle = {
+    overview: "Overview",
+    "surat-keluar": "Surat Keluar",
+    "surat-tugas": "Surat Tugas",
+    klasifikasi: "Kode Klasifikasi",
+  }[activeTab]
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
@@ -492,13 +443,11 @@ export function SuratView({ theme = "dark", subTab = "overview" }: SuratViewProp
       {/* Standard Unified Page Header - Merah, Hitam, Putih */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className={`text-2xl font-bold tracking-tight my-0 ${isDark ? "text-white" : "text-black"}`}>
-            Surat Menyurat{" "}
-            {activeTab === "overview" && "— Overview"}
-            {activeTab === "surat-keluar" && "— Surat Keluar"}
-            {activeTab === "surat-tugas" && "— Surat Tugas"}
-            {activeTab === "klasifikasi" && "— Kode Klasifikasi"}
-            {activeTab === "simulator" && "— Simulator Concurrency"}
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-red-600 dark:text-red-400">
+            Surat
+          </p>
+          <h1 className={`text-xl font-bold tracking-tight my-0 ${isDark ? "text-white" : "text-black"}`}>
+            {pageTitle}
           </h1>
           <p className={`text-xs mt-1 font-medium ${isDark ? "text-gray-300" : "text-slate-700"}`}>
             Portal Penomoran Surat Keluar, Penugasan Pegawai & Standarisasi Klasifikasi Arsip KPU Provinsi Sulawesi Utara
@@ -941,8 +890,8 @@ export function SuratView({ theme = "dark", subTab = "overview" }: SuratViewProp
                         key={surat.id_surat_keluar}
                         className={
                           isDark
-                            ? "border-b border-white/20 hover:bg-white/[0.05]"
-                            : "border-b border-slate-100 hover:bg-slate-50"
+                            ? "border-b border-white/20"
+                            : "border-b border-slate-100"
                         }
                       >
                         <TableCell className="py-3.5">
@@ -1123,78 +1072,6 @@ export function SuratView({ theme = "dark", subTab = "overview" }: SuratViewProp
                 ))}
               </div>
             </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* ========================================================================= */}
-      {/* 5. CONCURRENCY SIMULATOR TAB */}
-      {/* ========================================================================= */}
-      {activeTab === "simulator" && (
-        <div className="space-y-4">
-          <Card
-            className={`${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"
-              } backdrop-blur-md shadow-lg rounded-2xl`}
-          >
-            <CardHeader className="p-5 pb-4 border-b border-slate-200 dark:border-slate-800">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-red-600" />
-                    <CardTitle className={`text-base font-bold my-0 ${isDark ? "text-white" : "text-black"}`}>
-                      Simulator Concurrency Penomoran Atomic (Row Lock)
-                    </CardTitle>
-                  </div>
-                  <p className={`text-xs mt-1 ${isDark ? "text-gray-400" : "text-slate-600"}`}>
-                    Uji coba 8 pegawai di berbagai subbagian menerbitkan surat secara simultan di milidetik yang sama tanpa duplikasi nomor.
-                  </p>
-                </div>
-                <button
-                  onClick={runConcurrencySimulator}
-                  disabled={isSimulating}
-                  className="btn-kpu-red px-4 py-2 text-white font-bold text-xs rounded-xl cursor-pointer transition-all active:scale-95 disabled:opacity-50 self-start sm:self-auto shrink-0"
-                >
-                  {isSimulating ? "Mensimulasikan Lock SQL..." : "Jalankan Uji Concurrency"}
-                </button>
-              </div>
-            </CardHeader>
-
-            {simResults.length > 0 && (
-              <CardContent className="p-5 pt-4">
-                <div className="text-xs font-bold text-red-600 dark:text-red-400 flex items-center gap-2 mb-3.5">
-                  <CheckCircle2 className="w-4 h-4" /> Hasil Verifikasi Transaksi Atomic (Zero Duplicate Guarantee - {simResults.length} Permintaan Berhasil):
-                </div>
-                <div className="space-y-2.5">
-                  {simResults.map((res, idx) => (
-                    <div
-                      key={idx}
-                      className={`p-3.5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2 transition-all ${isDark
-                          ? "bg-[#111827]/70 border-white/10 hover:border-red-500/40"
-                          : "bg-slate-50 border-slate-200 hover:border-red-300"
-                        }`}
-                    >
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className={`text-sm font-bold ${isDark ? "text-white" : "text-black"}`}>
-                            {res.user}
-                          </span>
-                          <span className="text-xs text-slate-400">({res.role})</span>
-                        </div>
-                        <div className="text-xs text-slate-500 mt-0.5">Waktu Eksekusi: <strong className="font-mono">{res.time} WITA</strong></div>
-                      </div>
-                      <div className="text-left sm:text-right">
-                        <div className="font-mono text-sm font-black text-red-600 dark:text-red-400">
-                          #{res.seq}: {res.number}
-                        </div>
-                        <span className="text-xs font-semibold text-slate-700 dark:text-gray-300 flex items-center sm:justify-end gap-1 mt-0.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-red-600" /> Atomic Row Lock Verified
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            )}
           </Card>
         </div>
       )}

@@ -53,7 +53,7 @@ export function KelolaUserView({ theme }: { theme: "light" | "dark" }) {
             </TableHeader>
             <TableBody>
               {users.map((u) => (
-                <TableRow key={u.id} className={isDark ? "border-b border-white/20 hover:bg-white/[0.05]" : "border-b border-slate-100 hover:bg-slate-50"}>
+                <TableRow key={u.id} className={isDark ? "border-b border-white/20" : "border-b border-slate-100"}>
                   <TableCell className={`font-bold text-xs ${isDark ? "text-white" : "text-black"}`}>{u.name}</TableCell>
                   <TableCell className={`text-xs font-mono font-semibold ${isDark ? "text-gray-300" : "text-slate-800"}`}>{u.email}</TableCell>
                   <TableCell className={`text-xs font-bold ${isDark ? "text-gray-200" : "text-black"}`}>{u.subbagian}</TableCell>

@@ -302,7 +302,7 @@ export function SuratDashboard({
                 filteredSurat.map((surat) => (
                   <TableRow
                     key={surat.id}
-                    className={`transition-colors cursor-pointer ${isDark ? "border-b border-white/20 hover:bg-white/[0.05]" : "border-b border-slate-100 hover:bg-slate-50"
+                    className={`cursor-pointer ${isDark ? "border-b border-white/20" : "border-b border-slate-100"
                       }`}
                     onClick={() => onSelectSurat(surat)}
                   >

@@ -50,7 +50,7 @@ const MONTHLY_TREND_DATA: MonthlyData[] = [
   { bulan: "Desember", shortBulan: "Des", realisasi: 0.00, target: 3.81, isCompleted: false },
 ]
 
-interface DivisiSerapan {
+interface SubbagianSerapan {
   id: string
   nama: string
   realisasi: number
@@ -58,12 +58,13 @@ interface DivisiSerapan {
   pct: number
 }
 
-const SERAPAN_DIVISI_DATA: DivisiSerapan[] = [
-  { id: "keuangan", nama: "Keuangan & Umum", realisasi: 10.36, pagu: 14.80, pct: 70 },
-  { id: "teknis", nama: "Teknis Penyelenggaraan", realisasi: 9.67, pagu: 12.40, pct: 78 },
-  { id: "sdm", nama: "Sosialisasi & SDM", realisasi: 5.89, pagu: 9.20, pct: 64 },
-  { id: "rendatin", nama: "Perencanaan & Data", realisasi: 5.17, pagu: 7.60, pct: 68 },
-  { id: "hukum", nama: "Hukum & Pengawasan", realisasi: 3.76, pagu: 5.78, pct: 65 },
+const SERAPAN_SUBBAGIAN_DATA: SubbagianSerapan[] = [
+  { id: "sdm", nama: "SDM", realisasi: 5.89, pagu: 9.20, pct: 64 },
+  { id: "rendatin", nama: "RENDATIN", realisasi: 5.17, pagu: 7.60, pct: 68 },
+  { id: "teknis", nama: "Teknis", realisasi: 9.67, pagu: 12.40, pct: 78 },
+  { id: "hukum", nama: "Hukum", realisasi: 3.76, pagu: 5.78, pct: 65 },
+  { id: "keuangan", nama: "Keuangan", realisasi: 5.68, pagu: 8.00, pct: 71 },
+  { id: "umlog", nama: "UMLOG", realisasi: 4.68, pagu: 6.80, pct: 69 },
 ]
 
 interface TopAkunItem {
@@ -89,7 +90,7 @@ const INITIAL_REALISASI_TERBARU = [
     tanggal: "2025-01-15",
     namaAkun: "Belanja Modal Gedung",
     kodeAkun: "5321",
-    divisi: "Div. Sosialisasi, Pendi...",
+    subbagian: "SDM",
     jumlah: 2760000000,
   },
   {
@@ -98,7 +99,7 @@ const INITIAL_REALISASI_TERBARU = [
     tanggal: "2025-01-15",
     namaAkun: "Belanja Modal Peralatan",
     kodeAkun: "5311",
-    divisi: "Div. Keuangan, Umum,...",
+    subbagian: "UMLOG",
     jumlah: 2576000000,
   },
   {
@@ -107,7 +108,7 @@ const INITIAL_REALISASI_TERBARU = [
     tanggal: "2025-01-15",
     namaAkun: "Belanja Jasa",
     kodeAkun: "5251",
-    divisi: "Div. Perencanaan, Dat...",
+    subbagian: "RENDATIN",
     jumlah: 5460000000,
   },
   {
@@ -116,7 +117,7 @@ const INITIAL_REALISASI_TERBARU = [
     tanggal: "2025-01-15",
     namaAkun: "Belanja Perjalanan Dinas",
     kodeAkun: "5241",
-    divisi: "Div. Hukum dan Penga...",
+    subbagian: "Hukum",
     jumlah: 3150000000,
   },
   {
@@ -125,7 +126,7 @@ const INITIAL_REALISASI_TERBARU = [
     tanggal: "2025-01-15",
     namaAkun: "Belanja Pemeliharaan",
     kodeAkun: "5231",
-    divisi: "Div. Sosialisasi, Pendi...",
+    subbagian: "SDM",
     jumlah: 1260000000,
   },
 ]
@@ -137,7 +138,7 @@ const INITIAL_TRANSAKSI_FIGMA: TransaksiRealisasi[] = [
     noDokumen: "001/SPM-KPU/2025",
     kodeAkun: "521111",
     namaAkun: "Belanja Operasional Kantor",
-    subbagian: "Keuangan & Umum",
+    subbagian: "Keuangan",
     usulanKegiatan: "Pengadaan Alat Tulis & Konsumsi Rapat Operasional",
     jumlah: 150000000,
     buktiFile: "SPM_001_Operasional.pdf",
@@ -150,7 +151,7 @@ const INITIAL_TRANSAKSI_FIGMA: TransaksiRealisasi[] = [
     noDokumen: "002/SPM-KPU/2025",
     kodeAkun: "521211",
     namaAkun: "Pengadaan Logistik Pilkada",
-    subbagian: "Teknis Penyelenggaraan",
+    subbagian: "Teknis",
     usulanKegiatan: "Honorarium Panitia PPK & PPS Kabupaten Minahasa",
     jumlah: 85000000,
     buktiFile: "Honor_PPK_Minahasa.pdf",
@@ -163,7 +164,7 @@ const INITIAL_TRANSAKSI_FIGMA: TransaksiRealisasi[] = [
     noDokumen: "003/SPM-KPU/2025",
     kodeAkun: "524111",
     namaAkun: "Sosialisasi Pemilih",
-    subbagian: "Sosialisasi & SDM",
+    subbagian: "SDM",
     usulanKegiatan: "Sewa Gedung Rapat Koordinasi Tahapan Pilkada",
     jumlah: 45000000,
     buktiFile: "Kwitansi_Sewa_Gedung.pdf",
@@ -176,7 +177,7 @@ const INITIAL_TRANSAKSI_FIGMA: TransaksiRealisasi[] = [
     noDokumen: "004/SPM-KPU/2025",
     kodeAkun: "522112",
     namaAkun: "Perjalanan Dinas Pimpinan",
-    subbagian: "Hukum & Pengawasan",
+    subbagian: "Hukum",
     usulanKegiatan: "Perjalanan Dinas Pengawasan Logistik ke Kepulauan",
     jumlah: 27500000,
     buktiFile: "SPD_Pengawasan_Logistik.pdf",
@@ -189,7 +190,7 @@ const INITIAL_TRANSAKSI_FIGMA: TransaksiRealisasi[] = [
     noDokumen: "005/SPM-KPU/2025",
     kodeAkun: "521213",
     namaAkun: "Pemeliharaan Perangkat Server",
-    subbagian: "Perencanaan & Data",
+    subbagian: "RENDATIN",
     usulanKegiatan: "Upgrade Storage & Cloud Server Sidalih TA 2025",
     jumlah: 62000000,
     buktiFile: "Faktur_Server_Sidalih.pdf",
@@ -199,11 +200,11 @@ const INITIAL_TRANSAKSI_FIGMA: TransaksiRealisasi[] = [
 ]
 
 const INITIAL_AKUN: AkunAnggaran[] = [
-  { kode: "521111", nama: "Belanja Operasional Kantor & Perjalanan Dinas", pagu: 14800000000, realisasi: 10360000000, sisa: 4440000000, divisi: "Keuangan & Umum" },
-  { kode: "521211", nama: "Pengadaan Logistik & Kotak Suara Pilkada", pagu: 12400000000, realisasi: 9670000000, sisa: 2730000000, divisi: "Teknis Penyelenggaraan" },
-  { kode: "522112", nama: "Honorarium Panitia Pemilihan (PPK & PPS)", pagu: 9200000000, realisasi: 5890000000, sisa: 3310000000, divisi: "Sosialisasi & SDM" },
-  { kode: "524111", nama: "Sosialisasi & Edukasi Pemilih Pemula", pagu: 7600000000, realisasi: 5170000000, sisa: 2430000000, divisi: "Perencanaan & Data" },
-  { kode: "526115", nama: "Bantuan Hukum & Sengketa Pemilu", pagu: 5780000000, realisasi: 3760000000, sisa: 2020000000, divisi: "Hukum & Pengawasan" },
+  { kode: "521111", nama: "Belanja Operasional Kantor & Perjalanan Dinas", pagu: 14800000000, realisasi: 10360000000, sisa: 4440000000, divisi: "Keuangan" },
+  { kode: "521211", nama: "Pengadaan Logistik & Kotak Suara Pilkada", pagu: 12400000000, realisasi: 9670000000, sisa: 2730000000, divisi: "Teknis" },
+  { kode: "522112", nama: "Honorarium Panitia Pemilihan (PPK & PPS)", pagu: 9200000000, realisasi: 5890000000, sisa: 3310000000, divisi: "SDM" },
+  { kode: "524111", nama: "Sosialisasi & Edukasi Pemilih Pemula", pagu: 7600000000, realisasi: 5170000000, sisa: 2430000000, divisi: "RENDATIN" },
+  { kode: "526115", nama: "Bantuan Hukum & Sengketa Pemilu", pagu: 5780000000, realisasi: 3760000000, sisa: 2020000000, divisi: "Hukum" },
 ]
 
 export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate }: Props) {
@@ -214,7 +215,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
 
   // Top Filter Bar State
   const [selectedTA, setSelectedTA] = useState("TA 2025")
-  const [selectedDivisi, setSelectedDivisi] = useState("Semua Divisi")
+  const [selectedSubbagian, setSelectedSubbagian] = useState("Semua Subbagian")
   const [selectedProgram, setSelectedProgram] = useState("Semua Program")
   const [startDate, setStartDate] = useState("2025-01-01")
   const [endDate, setEndDate] = useState("2025-09-30")
@@ -253,9 +254,9 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
     return matchesSub && matchesSearch
   })
 
-  // Dynamic KPI numbers depending on selectedDivisi
+  // Dynamic KPI numbers depending on selected subbagian
   const getKPIData = () => {
-    if (selectedDivisi === "Semua Divisi") {
+    if (selectedSubbagian === "Semua Subbagian") {
       return {
         pagu: "45.78",
         realisasi: "31.25",
@@ -266,7 +267,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
         terserapText: "68.3% terserap",
       }
     }
-    const found = SERAPAN_DIVISI_DATA.find((d) => d.nama.toLowerCase().includes(selectedDivisi.toLowerCase()))
+    const found = SERAPAN_SUBBAGIAN_DATA.find((item) => item.nama === selectedSubbagian)
     if (found) {
       const sisa = (found.pagu - found.realisasi).toFixed(2)
       return {
@@ -291,17 +292,23 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
   }
 
   const kpi = getKPIData()
+  const pageTitle: Record<RealisasiSubTab, string> = {
+    ringkasan: "Overview",
+    transaksi: "Daftar Transaksi",
+    laporan: "Laporan Bulanan",
+    verifikasi: "Verifikasi Dokumen",
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Dynamic Header & Actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className={`text-2xl font-bold tracking-tight my-0 ${isDark ? "text-white" : "text-black"}`}>
-            Realisasi Anggaran {subTab === "ringkasan" && "— Overview"}
-            {subTab === "transaksi" && "— Daftar Transaksi"}
-            {subTab === "laporan" && "— Laporan Bulanan"}
-            {subTab === "verifikasi" && "— Verifikasi Dokumen"}
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-red-600 dark:text-red-400">
+            Realisasi Anggaran
+          </p>
+          <h1 className={`text-xl font-bold tracking-tight my-0 ${isDark ? "text-white" : "text-black"}`}>
+            {pageTitle[subTab]}
           </h1>
           <p className={`text-xs mt-1 font-medium ${isDark ? "text-gray-300" : "text-slate-700"}`}>
             Portal Pemantauan & Transaksi Realisasi Anggaran PTP KPU Provinsi Sulawesi Utara
@@ -330,35 +337,6 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
             <span>Laporan Bulanan</span>
           </button>
         </div>
-      </div>
-
-      {/* Subtabs Quick Navigation */}
-      <div className={`flex items-center gap-1.5 p-1 rounded-xl border w-fit overflow-x-auto max-w-full ${
-        isDark ? "bg-[#131b2e] border-white/10" : "bg-slate-100 border-slate-300"
-      }`}>
-        {[
-          { id: "ringkasan", label: "Overview" },
-          { id: "transaksi", label: "Daftar Transaksi" },
-          { id: "laporan", label: "Laporan Bulanan" },
-          { id: "verifikasi", label: "Verifikasi Dokumen" },
-        ].map((tab) => {
-          const isActive = subTab === tab.id
-          return (
-            <button
-              key={tab.id}
-              onClick={() => onNavigate && onNavigate(tab.id === "ringkasan" ? "realization-summary" : `realization-${tab.id === "laporan" ? "reports" : tab.id}`)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-                isActive
-                  ? "bg-red-600 text-white shadow-sm"
-                  : isDark
-                  ? "text-gray-400 hover:text-white hover:bg-white/5"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-white"
-              }`}
-            >
-              {tab.label}
-            </button>
-          )
-        })}
       </div>
 
       {/* ========================================================================= */}
@@ -391,23 +369,24 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                 <ChevronDown className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
               </div>
 
-              {/* Divisi Dropdown */}
+              {/* Subbagian Dropdown */}
               <div className="relative">
                 <select
-                  value={selectedDivisi}
-                  onChange={(e) => setSelectedDivisi(e.target.value)}
+                  value={selectedSubbagian}
+                  onChange={(e) => setSelectedSubbagian(e.target.value)}
                   className={`appearance-none font-bold text-xs px-3.5 py-2 pr-8 rounded-xl border cursor-pointer ${
                     isDark
                       ? "bg-[#131b2e] border-[#1e293b] text-white hover:border-red-500"
                       : "bg-slate-50 border-slate-300 text-black hover:border-red-500"
                   }`}
                 >
-                  <option value="Semua Divisi">Semua Divisi</option>
-                  <option value="Keuangan & Umum">Keuangan & Umum</option>
-                  <option value="Teknis Penyelenggaraan">Teknis Penyelenggaraan</option>
-                  <option value="Sosialisasi & SDM">Sosialisasi & SDM</option>
-                  <option value="Perencanaan & Data">Perencanaan & Data</option>
-                  <option value="Hukum & Pengawasan">Hukum & Pengawasan</option>
+                  <option value="Semua Subbagian">Semua Subbagian</option>
+                  <option value="SDM">SDM</option>
+                  <option value="RENDATIN">RENDATIN</option>
+                  <option value="Teknis">Teknis</option>
+                  <option value="Hukum">Hukum</option>
+                  <option value="Keuangan">Keuangan</option>
+                  <option value="UMLOG">UMLOG</option>
                 </select>
                 <ChevronDown className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
               </div>
@@ -469,7 +448,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                   <p className={`text-[11px] font-extrabold tracking-wider uppercase ${isDark ? "text-gray-300" : "text-slate-800"}`}>
                     TOTAL PAGU ANGGARAN
                   </p>
-                  <h2 className="text-2xl font-black mt-1 tracking-tight text-[#dc2626] dark:text-[#ef4444]">
+                  <h2 className={`text-2xl font-black mt-1 tracking-tight ${isDark ? "text-white" : "text-black"}`}>
                     Rp {kpi.pagu} M
                   </h2>
                   <p className={`text-[10px] font-bold mt-1 ${isDark ? "text-gray-400" : "text-slate-600"}`}>
@@ -490,7 +469,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                   <p className={`text-[11px] font-extrabold tracking-wider uppercase ${isDark ? "text-gray-300" : "text-slate-800"}`}>
                     TOTAL REALISASI
                   </p>
-                  <h2 className="text-2xl font-black mt-1 tracking-tight text-[#dc2626] dark:text-[#ef4444]">
+                  <h2 className={`text-2xl font-black mt-1 tracking-tight ${isDark ? "text-white" : "text-black"}`}>
                     Rp {kpi.realisasi} M
                   </h2>
                   <p className={`text-[10px] font-bold flex items-center gap-1 mt-1 text-red-600 dark:text-red-400`}>
@@ -511,7 +490,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                   <p className={`text-[11px] font-extrabold tracking-wider uppercase ${isDark ? "text-gray-300" : "text-slate-800"}`}>
                     SISA ANGGARAN
                   </p>
-                  <h2 className="text-2xl font-black mt-1 tracking-tight text-[#dc2626] dark:text-[#ef4444]">
+                  <h2 className={`text-2xl font-black mt-1 tracking-tight ${isDark ? "text-white" : "text-black"}`}>
                     Rp {kpi.sisa} M
                   </h2>
                   <p className={`text-[10px] font-bold mt-1 ${isDark ? "text-gray-400" : "text-slate-600"}`}>
@@ -527,13 +506,13 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
             {/* Card 4: PERSENTASE REALISASI */}
             <Card className={`relative overflow-hidden transition-all ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
               <div className="absolute top-0 left-0 w-1.5 h-full bg-red-600"></div>
-              <CardContent className={`m-3 ml-4 p-4 rounded-xl border flex flex-col justify-between min-h-[118px] ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
-                <div>
+              <CardContent className={`m-3 ml-4 p-4 rounded-xl border flex flex-col justify-center gap-3 min-h-[118px] ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
+                <div className="pt-1">
                   <p className={`text-[11px] font-extrabold tracking-wider uppercase ${isDark ? "text-gray-300" : "text-slate-800"}`}>
                     PERSENTASE REALISASI
                   </p>
                   <div className="flex items-baseline justify-between mt-1">
-                    <h2 className="text-2xl font-black tracking-tight text-[#dc2626] dark:text-[#ef4444]">
+                    <h2 className={`text-2xl font-black tracking-tight ${isDark ? "text-white" : "text-black"}`}>
                       {kpi.persentase}%
                     </h2>
                     <span className={`text-[10px] font-bold ${isDark ? "text-gray-400" : "text-slate-600"}`}>
@@ -542,7 +521,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                   </div>
                 </div>
 
-                <div className="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden mt-2">
+                <div className="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full bg-red-600 transition-all duration-500"
                     style={{ width: `${Math.min(100, kpi.persentase)}%` }}
@@ -553,89 +532,124 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
           </div>
 
           {/* ========================================================================= */}
-          {/* ROW 2: TREN REALISASI BULANAN & SERAPAN PER DIVISI */}
+          {/* ROW 2: TREN REALISASI BULANAN & SERAPAN PER SUBBAGIAN */}
           {/* ========================================================================= */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Chart (2 columns span): Tren Realisasi Bulanan */}
-            <Card className={`lg:col-span-2 ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl flex flex-col justify-between`}>
-              <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-                <div>
+            <Card className={`lg:col-span-2 min-w-0 ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl flex flex-col overflow-hidden`}>
+              <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+                <div className="min-w-0">
                   <CardTitle className={`text-base font-bold my-0 ${isDark ? "text-white" : "text-black"}`}>
                     Tren Realisasi Bulanan
                   </CardTitle>
-                  <p className={`text-xs mt-1 font-medium ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-                    Bar = Realisasi Keuangan • Garis Putus = Target Pagu / Bulan (Rp 3.81M)
-                  </p>
+                  <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] mt-2 font-semibold ${isDark ? "text-gray-300" : "text-slate-600"}`}>
+                    <span className="inline-flex items-center gap-1.5">
+                      <span className="h-2.5 w-2.5 rounded-sm bg-gradient-to-t from-red-700 to-red-500" />
+                      Realisasi keuangan
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <span className="w-5 border-t-2 border-dashed border-red-500" />
+                      Target Rp 3.81 M / bulan
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-red-600 dark:text-red-400 bg-red-600/10 px-2.5 py-1 rounded-md border border-red-500/20">
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs font-bold text-red-600 dark:text-red-300 bg-red-600/10 px-3 py-1.5 rounded-lg border border-red-500/20">
                     {selectedTA}
                   </span>
                 </div>
               </CardHeader>
 
-              <CardContent className="pt-6 flex-1 flex flex-col justify-between">
-                {/* Chart Graphic Area */}
-                <div className={`h-52 w-full flex items-end justify-between gap-1.5 p-4 pt-7 border rounded-xl relative ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
-                  {/* Dashed Target Line */}
-                  <div className="absolute left-0 right-0 top-[38%] border-b-2 border-dashed border-red-500/60 z-10 flex items-center justify-end pr-2 pointer-events-none">
-                    <span className="bg-black text-white text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border border-gray-700">
-                      Target (3.81M)
-                    </span>
+              <CardContent className="pt-5 flex-1 flex flex-col gap-4 min-h-0">
+                {/* Responsive chart area */}
+                <div className={`relative flex-1 min-h-[320px] w-full overflow-hidden border rounded-xl ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
+                  {/* Y-axis labels */}
+                  <div className={`absolute left-3 top-7 bottom-11 w-8 flex flex-col justify-between text-[9px] font-semibold ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                    {["6 M", "4.5 M", "3 M", "1.5 M", "0"].map((label) => (
+                      <span key={label}>{label}</span>
+                    ))}
                   </div>
 
-                  {MONTHLY_TREND_DATA.map((item, idx) => {
-                    const maxScale = 6.0
-                    const heightPct = (item.realisasi / maxScale) * 100
+                  {/* Plot area */}
+                  <div className="absolute left-12 right-4 top-7 bottom-11">
+                    {[0, 25, 50, 75, 100].map((position) => (
+                      <div
+                        key={position}
+                        className={`absolute left-0 right-0 border-t ${isDark ? "border-white/[0.07]" : "border-slate-200"}`}
+                        style={{ top: `${position}%` }}
+                      />
+                    ))}
 
-                    return (
-                      <div key={idx} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group z-20">
-                        <div className="w-full flex justify-center items-end h-full">
-                          <div
-                            style={{ height: `${item.isCompleted ? Math.max(6, heightPct) : 0}%` }}
-                            className={`w-full max-w-[22px] rounded-t transition-all duration-300 relative ${
-                              item.isCompleted
-                                ? "bg-gradient-to-t from-red-700 to-red-500 group-hover:brightness-125"
-                                : "bg-slate-200 dark:bg-slate-800"
-                            }`}
-                          >
-                            {item.isCompleted && (
-                              <span className="opacity-0 group-hover:opacity-100 absolute -top-7 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] py-0.5 px-1.5 rounded border border-gray-700 font-mono font-bold whitespace-nowrap z-30 pointer-events-none">
-                                Rp {item.realisasi.toFixed(2)}M
-                              </span>
-                            )}
+                    {/* Monthly target */}
+                    <div
+                      className="absolute left-0 right-0 z-20 border-t-2 border-dashed border-red-500/70 pointer-events-none"
+                      style={{ top: `${100 - (3.81 / 6) * 100}%` }}
+                    >
+                      <span className="absolute right-0 -top-6 rounded-md border border-red-500/20 bg-red-600/10 px-2 py-0.5 text-[9px] font-bold text-red-600 dark:text-red-300 backdrop-blur-sm">
+                        Target 3.81 M
+                      </span>
+                    </div>
+
+                    <div className="relative z-10 grid h-full grid-cols-12 items-end gap-1.5 sm:gap-2.5">
+                      {MONTHLY_TREND_DATA.map((item) => {
+                        const heightPct = (item.realisasi / 6) * 100
+
+                        return (
+                          <div key={item.bulan} className="group relative flex h-full min-w-0 items-end justify-center">
+                            <div
+                              style={{ height: item.isCompleted ? `${Math.max(5, heightPct)}%` : "4px" }}
+                              className={`relative w-full max-w-8 rounded-t-md transition-[filter] duration-200 ${
+                                item.isCompleted
+                                  ? "bg-gradient-to-t from-red-800 via-red-700 to-red-500 shadow-[0_0_18px_rgba(220,38,38,0.12)] group-hover:brightness-110"
+                                  : isDark
+                                  ? "bg-slate-700/70"
+                                  : "bg-slate-300"
+                              }`}
+                            >
+                              {item.isCompleted && (
+                                <span className="pointer-events-none absolute -top-7 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-950 px-2 py-1 text-[9px] font-bold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                                  Rp {item.realisasi.toFixed(2)} M
+                                </span>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                        <span className={`text-[10px] font-bold ${isDark ? "text-gray-300" : "text-black"}`}>
-                          {item.shortBulan}
-                        </span>
-                      </div>
-                    )
-                  })}
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* X-axis labels */}
+                  <div className="absolute bottom-3 left-12 right-4 grid grid-cols-12 gap-1.5 sm:gap-2.5">
+                    {MONTHLY_TREND_DATA.map((item) => (
+                      <span key={item.bulan} className={`truncate text-center text-[9px] sm:text-[10px] font-bold ${isDark ? "text-gray-300" : "text-slate-700"}`}>
+                        {item.shortBulan}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
-                {/* Bottom Legend */}
-                <div className="pt-4 flex items-center justify-center gap-6 text-xs font-bold">
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 bg-red-600 rounded-xs"></span>
-                    <span className={isDark ? "text-gray-300" : "text-slate-700"}>Realisasi</span>
+                {/* Chart highlights */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px]">
+                  <div className={`rounded-lg border px-3 py-2 ${isDark ? "border-white/10 bg-[#111827]/60" : "border-slate-200 bg-slate-50"}`}>
+                    <span className={isDark ? "text-gray-400" : "text-slate-500"}>Rata-rata realisasi</span>
+                    <strong className={`ml-1.5 ${isDark ? "text-white" : "text-slate-900"}`}>Rp 3.12 M</strong>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 border-t-2 border-dashed border-red-500"></div>
-                    <span className={isDark ? "text-gray-300" : "text-slate-700"}>Target Pagu/Bulan</span>
+                  <div className={`rounded-lg border px-3 py-2 sm:text-right ${isDark ? "border-white/10 bg-[#111827]/60" : "border-slate-200 bg-slate-50"}`}>
+                    <span className={isDark ? "text-gray-400" : "text-slate-500"}>Tertinggi</span>
+                    <strong className="ml-1.5 text-red-600 dark:text-red-300">Juni · Rp 4.90 M</strong>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Right Panel (1 column span): Serapan per Divisi */}
+            {/* Right Panel (1 column span): Serapan per Subbagian */}
             <Card className={`${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl flex flex-col justify-between`}>
               <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex items-center gap-2">
                   <PieChart className="w-4 h-4 text-red-600" />
                   <CardTitle className={`text-base font-bold my-0 ${isDark ? "text-white" : "text-black"}`}>
-                    Serapan per Divisi
+                    Serapan per Subbagian
                   </CardTitle>
                 </div>
                 <span className="text-xs font-black text-white bg-red-600 px-2 py-0.5 rounded-md">
@@ -644,12 +658,12 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
               </CardHeader>
 
               <CardContent className="pt-4 space-y-3 flex-1 flex flex-col justify-between">
-                {SERAPAN_DIVISI_DATA.map((row) => (
+                {SERAPAN_SUBBAGIAN_DATA.map((row) => (
                   <div
                     key={row.id}
-                    onClick={() => setSelectedDivisi(selectedDivisi === row.nama ? "Semua Divisi" : row.nama)}
+                    onClick={() => setSelectedSubbagian(selectedSubbagian === row.nama ? "Semua Subbagian" : row.nama)}
                     className={`p-3 rounded-xl border space-y-1.5 transition-all cursor-pointer ${
-                      selectedDivisi === row.nama
+                      selectedSubbagian === row.nama
                         ? isDark
                           ? "bg-red-950/30 border-red-500/50"
                           : "bg-red-50 border-red-300"
@@ -662,7 +676,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                       <span className={`font-bold ${isDark ? "text-white" : "text-black"}`}>
                         {row.nama}
                       </span>
-                      <span className="font-mono font-black text-red-600 dark:text-red-400">
+                      <span className="font-black text-red-600 dark:text-red-400">
                         {row.pct}%
                       </span>
                     </div>
@@ -676,10 +690,10 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                     </div>
 
                     {/* Subtext Realisasi / Pagu */}
-                    <div className={`flex justify-between items-center text-[11px] font-mono font-bold ${isDark ? "text-gray-300" : "text-slate-800"}`}>
+                    <div className={`flex justify-between items-center text-[11px] font-bold ${isDark ? "text-gray-300" : "text-slate-800"}`}>
                       <span>Rp {row.realisasi.toFixed(2)} M / Rp {row.pagu.toFixed(2)} M</span>
-                      <span className="text-[10px] font-sans font-semibold text-slate-500">
-                        {selectedDivisi === row.nama ? "Aktif" : "Filter"}
+                      <span className="text-[10px] font-semibold text-slate-500">
+                        {selectedSubbagian === row.nama ? "Aktif" : "Filter"}
                       </span>
                     </div>
                   </div>
@@ -702,15 +716,15 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                   </CardTitle>
                 </div>
                 <button
-                  onClick={() => onNavigate && onNavigate("realization-transactions")}
+                  onClick={() => onNavigate && onNavigate("realization-input")}
                   className="text-xs font-bold text-red-600 dark:text-red-400 hover:underline flex items-center gap-1 cursor-pointer"
                 >
-                  <span>Lihat Semua</span>
+                  <span>Input Realisasi</span>
                   <span>→</span>
                 </button>
               </CardHeader>
 
-              <CardContent className="p-0 flex-1">
+              <CardContent className="px-3 pb-3 flex-1">
                 <Table>
                   <TableHeader>
                     <TableRow className={isDark ? "border-b border-white/20 bg-[#0a0e1a]" : "border-b border-slate-200 bg-slate-100"}>
@@ -721,7 +735,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                         AKUN ANGGARAN
                       </TableHead>
                       <TableHead className={`text-[11px] font-extrabold uppercase ${isDark ? "text-white" : "text-black"}`}>
-                        DIVISI
+                        SUBBAGIAN
                       </TableHead>
                       <TableHead className={`text-[11px] font-extrabold uppercase text-right ${isDark ? "text-white" : "text-black"}`}>
                         JUMLAH REALISASI
@@ -730,12 +744,9 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                   </TableHeader>
                   <TableBody>
                     {INITIAL_REALISASI_TERBARU.map((row) => (
-                      <TableRow
-                        key={row.id}
-                        className={isDark ? "border-b border-white/10 hover:bg-white/[0.04]" : "border-b border-slate-100 hover:bg-slate-50"}
-                      >
+                      <TableRow key={row.id}>
                         <TableCell className="text-xs">
-                          <span className="font-mono font-bold text-red-600 dark:text-red-400 block">
+                          <span className="font-bold text-red-600 dark:text-red-400 block">
                             {row.noDokumen}
                           </span>
                           <span className={`text-[11px] font-semibold ${isDark ? "text-gray-400" : "text-slate-600"}`}>
@@ -746,14 +757,14 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                           <span className={`font-bold block ${isDark ? "text-white" : "text-black"}`}>
                             {row.namaAkun}
                           </span>
-                          <span className={`text-[11px] font-mono font-semibold ${isDark ? "text-gray-400" : "text-slate-600"}`}>
+                          <span className={`text-[11px] font-semibold ${isDark ? "text-gray-400" : "text-slate-600"}`}>
                             {row.kodeAkun}
                           </span>
                         </TableCell>
                         <TableCell className={`text-xs font-bold ${isDark ? "text-gray-200" : "text-black"}`}>
-                          {row.divisi}
+                          {row.subbagian}
                         </TableCell>
-                        <TableCell className="text-xs font-black text-red-600 dark:text-red-500 text-right whitespace-nowrap font-mono">
+                        <TableCell className="text-xs font-black text-red-600 dark:text-red-400 text-right whitespace-nowrap">
                           {formatRupiah(row.jumlah)}
                         </TableCell>
                       </TableRow>
@@ -790,11 +801,11 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                         <span className={`font-bold truncate ${isDark ? "text-white" : "text-black"}`}>
                           {item.nama}
                         </span>
-                        <span className="font-mono font-black text-red-600 dark:text-red-400 shrink-0 ml-2">
+                        <span className="font-black text-red-600 dark:text-red-400 shrink-0 ml-2">
                           {item.pct}%
                         </span>
                       </div>
-                      <div className={`text-[11px] font-mono font-bold mt-0.5 ${isDark ? "text-gray-300" : "text-slate-800"}`}>
+                      <div className={`text-[11px] font-bold mt-0.5 ${isDark ? "text-gray-300" : "text-slate-800"}`}>
                         {item.amount}
                       </div>
                       <div className="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden mt-1.5">
@@ -832,12 +843,13 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                       isDark ? "bg-[#131b2e] border-[#1e293b] text-white" : "bg-slate-50 border-slate-300 text-black"
                     }`}
                   >
-                    <option value="Semua">Semua Divisi / Subbagian</option>
-                    <option value="Keuangan">Keuangan & Umum</option>
-                    <option value="Teknis">Teknis Penyelenggaraan</option>
-                    <option value="Sosialisasi">Sosialisasi & SDM</option>
-                    <option value="Perencanaan">Perencanaan & Data</option>
-                    <option value="Hukum">Hukum & Pengawasan</option>
+                    <option value="Semua">Semua Subbagian</option>
+                    <option value="SDM">SDM</option>
+                    <option value="RENDATIN">RENDATIN</option>
+                    <option value="Teknis">Teknis</option>
+                    <option value="Hukum">Hukum</option>
+                    <option value="Keuangan">Keuangan</option>
+                    <option value="UMLOG">UMLOG</option>
                   </select>
                 </div>
 
@@ -873,7 +885,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                     <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>No. Dokumen</TableHead>
                     <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>Tanggal</TableHead>
                     <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>Akun Anggaran</TableHead>
-                    <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>Divisi / Subbagian</TableHead>
+                    <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>Subbagian</TableHead>
                     <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>Usulan Kegiatan</TableHead>
                     <TableHead className={`text-[11px] font-extrabold text-right ${isDark ? "text-white" : "text-black"}`}>Jumlah (Rp)</TableHead>
                     <TableHead className={`text-[11px] font-extrabold text-center ${isDark ? "text-white" : "text-black"}`}>Status</TableHead>
@@ -881,16 +893,16 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                 </TableHeader>
                 <TableBody>
                   {filteredTransactions.map((item) => (
-                    <TableRow key={item.id} className={isDark ? "border-b border-white/10 hover:bg-white/[0.04]" : "border-b border-slate-100 hover:bg-slate-50"}>
-                      <TableCell className="font-mono text-xs font-bold text-red-600 dark:text-red-400">{item.noDokumen}</TableCell>
+                    <TableRow key={item.id} className={isDark ? "border-b border-white/10" : "border-b border-slate-100"}>
+                      <TableCell className="text-xs font-bold text-red-600 dark:text-red-400">{item.noDokumen}</TableCell>
                       <TableCell className={`text-xs font-semibold whitespace-nowrap ${isDark ? "text-gray-300" : "text-black"}`}>{item.tanggal}</TableCell>
                       <TableCell className="text-xs">
-                        <span className={`font-mono font-bold block ${isDark ? "text-white" : "text-black"}`}>{item.kodeAkun}</span>
+                        <span className={`font-bold block ${isDark ? "text-white" : "text-black"}`}>{item.kodeAkun}</span>
                         <span className={`text-[11px] font-semibold ${isDark ? "text-gray-300" : "text-slate-800"}`}>{item.namaAkun}</span>
                       </TableCell>
                       <TableCell className={`text-xs font-bold ${isDark ? "text-gray-200" : "text-black"}`}>{item.subbagian}</TableCell>
                       <TableCell className={`font-bold text-xs truncate max-w-xs ${isDark ? "text-white" : "text-black"}`}>{item.usulanKegiatan}</TableCell>
-                      <TableCell className="text-xs font-black text-red-600 dark:text-red-500 text-right whitespace-nowrap font-mono">{formatRupiah(item.jumlah)}</TableCell>
+                      <TableCell className="text-xs font-black text-red-600 dark:text-red-400 text-right whitespace-nowrap">{formatRupiah(item.jumlah)}</TableCell>
                       <TableCell className="text-center">
                         <Badge variant={item.status === "Disetujui" ? "terkirim" : "diproses"}>
                           {item.status}
@@ -934,7 +946,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                   <TableRow className={isDark ? "border-b border-white/20 bg-[#0a0e1a]" : "border-b border-slate-200 bg-slate-100"}>
                     <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>KODE AKUN</TableHead>
                     <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>NAMA AKUN</TableHead>
-                    <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>DIVISI</TableHead>
+                    <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>SUBBAGIAN</TableHead>
                     <TableHead className={`text-[11px] font-extrabold text-right ${isDark ? "text-white" : "text-black"}`}>PAGU (RP)</TableHead>
                     <TableHead className={`text-[11px] font-extrabold text-right ${isDark ? "text-white" : "text-black"}`}>REALISASI (RP)</TableHead>
                     <TableHead className={`text-[11px] font-extrabold text-right ${isDark ? "text-white" : "text-black"}`}>SISA (RP)</TableHead>
@@ -942,13 +954,13 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                 </TableHeader>
                 <TableBody>
                   {akunList.map((a) => (
-                    <TableRow key={a.kode} className={isDark ? "border-b border-white/10 hover:bg-white/[0.04]" : "border-b border-slate-100 hover:bg-slate-50"}>
-                      <TableCell className="font-mono text-xs font-bold text-red-600 dark:text-red-400">{a.kode}</TableCell>
+                    <TableRow key={a.kode} className={isDark ? "border-b border-white/10" : "border-b border-slate-100"}>
+                      <TableCell className="text-xs font-bold text-red-600 dark:text-red-400">{a.kode}</TableCell>
                       <TableCell className={`text-xs font-bold ${isDark ? "text-white" : "text-black"}`}>{a.nama}</TableCell>
-                      <TableCell className={`text-xs font-bold ${isDark ? "text-gray-300" : "text-slate-800"}`}>{a.divisi || "Semua Divisi"}</TableCell>
-                      <TableCell className={`text-xs font-bold text-right font-mono ${isDark ? "text-gray-200" : "text-black"}`}>{formatRupiah(a.pagu)}</TableCell>
-                      <TableCell className="text-xs font-black text-red-600 dark:text-red-500 text-right font-mono">{formatRupiah(a.realisasi)}</TableCell>
-                      <TableCell className={`text-xs font-bold text-right font-mono ${isDark ? "text-gray-300" : "text-slate-800"}`}>{formatRupiah(a.sisa)}</TableCell>
+                      <TableCell className={`text-xs font-bold ${isDark ? "text-gray-300" : "text-slate-800"}`}>{a.divisi || "Semua Subbagian"}</TableCell>
+                      <TableCell className={`text-xs font-bold text-right ${isDark ? "text-gray-200" : "text-black"}`}>{formatRupiah(a.pagu)}</TableCell>
+                      <TableCell className="text-xs font-black text-red-600 dark:text-red-400 text-right">{formatRupiah(a.realisasi)}</TableCell>
+                      <TableCell className={`text-xs font-bold text-right ${isDark ? "text-gray-300" : "text-slate-800"}`}>{formatRupiah(a.sisa)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -979,7 +991,7 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                 <TableHeader>
                   <TableRow className={isDark ? "border-b border-white/20 bg-[#0a0e1a]" : "border-b border-slate-200 bg-slate-100"}>
                     <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>NO. DOKUMEN</TableHead>
-                    <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>USULAN & DIVISI</TableHead>
+                    <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>USULAN & SUBBAGIAN</TableHead>
                     <TableHead className={`text-[11px] font-extrabold text-right ${isDark ? "text-white" : "text-black"}`}>JUMLAH REALISASI</TableHead>
                     <TableHead className={`text-[11px] font-extrabold ${isDark ? "text-white" : "text-black"}`}>BUKTI FISIK</TableHead>
                     <TableHead className={`text-[11px] font-extrabold text-center ${isDark ? "text-white" : "text-black"}`}>STATUS</TableHead>
@@ -987,14 +999,14 @@ export function RealisasiAnggaranView({ theme, subTab = "ringkasan", onNavigate 
                 </TableHeader>
                 <TableBody>
                   {transaksiList.map((t) => (
-                    <TableRow key={t.id} className={isDark ? "border-b border-white/10 hover:bg-white/[0.04]" : "border-b border-slate-100 hover:bg-slate-50"}>
-                      <TableCell className="font-mono text-xs font-bold text-red-600 dark:text-red-400">{t.noDokumen}</TableCell>
+                    <TableRow key={t.id} className={isDark ? "border-b border-white/10" : "border-b border-slate-100"}>
+                      <TableCell className="text-xs font-bold text-red-600 dark:text-red-400">{t.noDokumen}</TableCell>
                       <TableCell className="text-xs">
                         <p className={`font-bold ${isDark ? "text-white" : "text-black"}`}>{t.usulanKegiatan}</p>
                         <p className={`text-[11px] font-semibold ${isDark ? "text-gray-300" : "text-slate-700"}`}>{t.subbagian}</p>
                       </TableCell>
-                      <TableCell className="text-xs font-black text-red-600 dark:text-red-500 text-right font-mono">{formatRupiah(t.jumlah)}</TableCell>
-                      <TableCell className={`text-xs font-mono font-bold flex items-center gap-1.5 ${isDark ? "text-white" : "text-black"}`}>
+                      <TableCell className="text-xs font-black text-red-600 dark:text-red-400 text-right">{formatRupiah(t.jumlah)}</TableCell>
+                      <TableCell className={`text-xs font-bold flex items-center gap-1.5 ${isDark ? "text-white" : "text-black"}`}>
                         <FileText className="w-3.5 h-3.5 text-red-600" /> {t.buktiFile}
                       </TableCell>
                       <TableCell className="text-center">

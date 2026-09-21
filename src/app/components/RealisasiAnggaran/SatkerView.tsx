@@ -1,4 +1,4 @@
-import { Construction, ArrowLeft } from "lucide-react"
+import { Construction } from "lucide-react"
 import { Card, CardContent } from "../ui/card"
 
 interface Props {
@@ -11,42 +11,19 @@ export function SatkerView({ theme, onNavigate }: Props) {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
-        <button
-          onClick={() => onNavigate && onNavigate("dashboard")}
-          className="hover:text-red-500 cursor-pointer transition-colors"
-        >
-          Dashboard
-        </button>
-        <span>&gt;</span>
-        <span>Master Data</span>
-        <span>&gt;</span>
-        <span className={isDark ? "text-white font-bold" : "text-slate-900 font-bold"}>Satker</span>
-      </div>
-
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
         <div>
-          <h1 className={`text-2xl font-bold tracking-tight my-0 ${isDark ? "text-white" : "text-black"}`}>
-            Satuan Kerja (Satker)
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-red-600 dark:text-red-400">
+            Realisasi Anggaran
+          </p>
+          <h1 className={`text-xl font-bold tracking-tight my-0 ${isDark ? "text-white" : "text-black"}`}>
+            Satker
           </h1>
           <p className={`text-xs mt-1 font-medium ${isDark ? "text-gray-300" : "text-slate-700"}`}>
             Pengelolaan Data Satuan Kerja KPU Provinsi dan Kabupaten/Kota
           </p>
         </div>
-
-        <button
-          onClick={() => onNavigate && onNavigate("realization-summary")}
-          className={`px-4 py-2 rounded-xl border text-xs font-bold flex items-center gap-2 cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-sm ${
-            isDark
-              ? "border-slate-700 bg-slate-900 text-white hover:bg-slate-800"
-              : "border-slate-300 bg-white text-black hover:bg-slate-50"
-          }`}
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Kembali ke Dashboard</span>
-        </button>
       </div>
 
       {/* Placeholder Card: Fitur dalam pengembangan */}

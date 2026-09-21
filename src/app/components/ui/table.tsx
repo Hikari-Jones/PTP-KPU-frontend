@@ -3,7 +3,7 @@ import * as React from "react"
 export function Table({ className = "", ...props }: React.HTMLAttributes<HTMLTableElement>) {
   return (
     <div className="relative w-full overflow-auto">
-      <table className={`w-full caption-bottom text-sm text-left ${className}`} {...props} />
+      <table className={`w-full caption-bottom border-separate border-spacing-x-0 border-spacing-y-3 text-sm text-left ${className}`} {...props} />
     </div>
   )
 }
@@ -13,11 +13,11 @@ export function TableHeader({ className = "", ...props }: React.HTMLAttributes<H
 }
 
 export function TableBody({ className = "", ...props }: React.HTMLAttributes<HTMLTableSectionElement>) {
-  return <tbody className={`divide-y divide-slate-100 dark:divide-white/20 ${className}`} {...props} />
+  return <tbody className={className} {...props} />
 }
 
 export function TableRow({ className = "", ...props }: React.HTMLAttributes<HTMLTableRowElement>) {
-  return <tr className={`border-b border-slate-100 dark:border-white/20 transition-colors hover:bg-slate-50 dark:hover:bg-white/[0.05] ${className}`} {...props} />
+  return <tr className={className} {...props} />
 }
 
 export function TableHead({ className = "", ...props }: React.ThHTMLAttributes<HTMLTableCellElement>) {
@@ -25,5 +25,10 @@ export function TableHead({ className = "", ...props }: React.ThHTMLAttributes<H
 }
 
 export function TableCell({ className = "", ...props }: React.TdHTMLAttributes<HTMLTableCellElement>) {
-  return <td className={`p-4 align-middle ${className}`} {...props} />
+  return (
+    <td
+      className={`p-4 align-middle bg-white/80 dark:bg-[#111827]/75 border-y border-slate-200 dark:border-white/10 first:border-l last:border-r first:rounded-l-xl last:rounded-r-xl ${className}`}
+      {...props}
+    />
+  )
 }

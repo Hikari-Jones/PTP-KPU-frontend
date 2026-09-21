@@ -188,58 +188,86 @@ export function DashboardView({ theme }: { theme: "light" | "dark" }) {
 
       {/* Dual Visual Charts: Tren Realisasi Anggaran Bulanan + Statistik Dokumen & Surat */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Chart 1: Tren Realisasi Bulanan (Dipindahkan ke Dashboard) */}
-        <Card className={`${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
-          <CardHeader className="flex flex-col items-start gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
-            <div>
-              <CardTitle className={`text-base font-bold ${isDark ? "text-white" : "text-black"}`}>
+        {/* Chart 1: Tren Realisasi Bulanan */}
+        <Card className={`min-w-0 overflow-hidden flex flex-col ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+            <div className="min-w-0">
+              <CardTitle className={`text-base font-bold my-0 ${isDark ? "text-white" : "text-black"}`}>
                 Tren Realisasi Anggaran Bulanan
               </CardTitle>
-              <p className={`text-xs mt-1 font-medium ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-                Bar = Realisasi Keuangan • Garis Putus = Target Pagu / Bulan (Rp 3.8M)
-              </p>
-            </div>
-            <div className="flex items-center gap-3 text-xs font-semibold">
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-sm bg-red-600 inline-block shadow-xs"></span>
-                <span className={isDark ? "text-white" : "text-black"}>Realisasi</span>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <div className={`h-44 w-full flex items-end justify-between gap-1.5 p-4 pt-7 border rounded-xl relative ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
-              {/* Target Line */}
-              <div className="absolute left-0 right-0 top-[38%] border-b-2 border-dashed border-red-500/60 z-10 flex items-center justify-end pr-2 pointer-events-none">
-                <span className="bg-black text-white text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border border-gray-700">
-                  Target (3.8M)
+              <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] mt-2 font-semibold ${isDark ? "text-gray-300" : "text-slate-600"}`}>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-sm bg-gradient-to-t from-red-700 to-red-500" />
+                  Realisasi keuangan
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="w-5 border-t-2 border-dashed border-red-500" />
+                  Target Rp 3.80 M / bulan
                 </span>
               </div>
+            </div>
+            <span className="shrink-0 rounded-lg border border-red-500/20 bg-red-600/10 px-3 py-1.5 text-xs font-bold text-red-600 dark:text-red-300">
+              TA 2025
+            </span>
+          </CardHeader>
+          <CardContent className="pt-5 flex-1 flex flex-col gap-4 min-h-0">
+            <div className={`relative flex-1 min-h-[340px] w-full overflow-hidden border rounded-xl ${isDark ? "bg-[#111827]/60 border-white/10" : "bg-slate-50 border-slate-200"}`}>
+              <div className={`absolute left-3 top-7 bottom-11 w-8 flex flex-col justify-between text-[9px] font-semibold ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                {["5 M", "3.75 M", "2.5 M", "1.25 M", "0"].map((label) => (
+                  <span key={label}>{label}</span>
+                ))}
+              </div>
 
-              {MONTHLY_TREND_DATA.map((item, idx) => {
-                const maxScale = 5.0
-                const heightPct = (item.realisasi / maxScale) * 100
+              <div className="absolute left-12 right-4 top-7 bottom-11">
+                {[0, 25, 50, 75, 100].map((position) => (
+                  <div key={position} className={`absolute left-0 right-0 border-t ${isDark ? "border-white/[0.07]" : "border-slate-200"}`} style={{ top: `${position}%` }} />
+                ))}
+                <div className="absolute left-0 right-0 z-20 border-t-2 border-dashed border-red-500/70 pointer-events-none" style={{ top: `${100 - (3.8 / 5) * 100}%` }}>
+                  <span className="absolute right-0 -top-6 rounded-md border border-red-500/20 bg-red-600/10 px-2 py-0.5 text-[9px] font-bold text-red-600 dark:text-red-300 backdrop-blur-sm">
+                    Target 3.80 M
+                  </span>
+                </div>
 
-                return (
-                  <div key={idx} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group z-20">
-                    <div className="w-full flex justify-center items-end h-full">
+                <div className="relative z-10 grid h-full grid-cols-12 items-end gap-1.5 sm:gap-2.5">
+                  {MONTHLY_TREND_DATA.map((item) => {
+                    const heightPct = (item.realisasi / 5) * 100
+                    const hasValue = item.realisasi > 0
+                    return (
+                      <div key={item.month} className="group relative flex h-full min-w-0 items-end justify-center">
                       <div
-                        style={{ height: `${heightPct}%` }}
-                        className={`w-full max-w-[20px] rounded-t transition-all duration-300 relative ${item.realisasi > 0
-                          ? "bg-gradient-to-t from-red-700 to-red-500 group-hover:brightness-125"
-                          : "bg-slate-200 dark:bg-slate-800"
-                          }`}
+                          style={{ height: hasValue ? `${Math.max(5, heightPct)}%` : "4px" }}
+                          className={`relative w-full max-w-8 rounded-t-md transition-[filter] duration-200 ${hasValue ? "bg-gradient-to-t from-red-800 via-red-700 to-red-500 shadow-[0_0_18px_rgba(220,38,38,0.12)] group-hover:brightness-110" : isDark ? "bg-slate-700/70" : "bg-slate-300"}`}
                       >
-                        {item.realisasi > 0 && (
-                          <span className="opacity-0 group-hover:opacity-100 absolute -top-7 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] py-0.5 px-1.5 rounded border border-gray-700 font-mono font-bold whitespace-nowrap z-30 pointer-events-none">
-                            Rp {item.realisasi}M
+                          {hasValue && (
+                            <span className="pointer-events-none absolute -top-7 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-950 px-2 py-1 text-[9px] font-bold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                              Rp {item.realisasi.toFixed(2)} M
                           </span>
                         )}
                       </div>
                     </div>
-                    <span className={`text-[10px] font-bold ${isDark ? "text-gray-300" : "text-black"}`}>{item.month}</span>
-                  </div>
-                )
-              })}
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="absolute bottom-3 left-12 right-4 grid grid-cols-12 gap-1.5 sm:gap-2.5">
+                {MONTHLY_TREND_DATA.map((item) => (
+                  <span key={item.month} className={`truncate text-center text-[9px] sm:text-[10px] font-bold ${isDark ? "text-gray-300" : "text-slate-700"}`}>
+                    {item.month}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px]">
+              <div className={`rounded-lg border px-3 py-2 ${isDark ? "border-white/10 bg-[#111827]/60" : "border-slate-200 bg-slate-50"}`}>
+                <span className={isDark ? "text-gray-400" : "text-slate-500"}>Realisasi hingga September</span>
+                <strong className={`ml-1.5 ${isDark ? "text-white" : "text-slate-900"}`}>Rp 31.25 M</strong>
+              </div>
+              <div className={`rounded-lg border px-3 py-2 sm:text-right ${isDark ? "border-white/10 bg-[#111827]/60" : "border-slate-200 bg-slate-50"}`}>
+                <span className={isDark ? "text-gray-400" : "text-slate-500"}>Tertinggi</span>
+                <strong className="ml-1.5 text-red-600 dark:text-red-300">Juni • Rp 4.20 M</strong>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -285,7 +313,7 @@ export function DashboardView({ theme }: { theme: "light" | "dark" }) {
                     <TableRow
                       key={idx}
                       className={
-                        isDark ? "hover:bg-white/[0.05] border-b border-white/20" : "hover:bg-slate-50 border-b border-slate-100"
+                        isDark ? "border-b border-white/20" : "border-b border-slate-100"
                       }
                     >
                       <TableCell className="font-mono text-xs font-bold text-red-600 dark:text-red-400">{row.no}</TableCell>
@@ -297,7 +325,9 @@ export function DashboardView({ theme }: { theme: "light" | "dark" }) {
                         {row.tanggal}
                       </TableCell>
                       <TableCell>
-                        <Badge variant={row.status as any}>{row.statusLabel}</Badge>
+                        <Badge variant={row.status as "terkirim" | "diterima" | "diproses" | "draft"}>
+                          {row.statusLabel}
+                        </Badge>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -307,24 +337,31 @@ export function DashboardView({ theme }: { theme: "light" | "dark" }) {
           </Card>
         </div>
 
-        <div>
-          <Card className={`h-full ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
+        <div className="min-w-0">
+          <Card className={`h-full overflow-hidden ${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"} backdrop-blur-md shadow-lg rounded-2xl`}>
             <div className={`p-4 border-b flex items-center justify-between ${isDark ? "border-[#1e293b]" : "border-slate-200"}`}>
               <h3 className={`text-sm font-bold ${isDark ? "text-white" : "text-black"}`}>Aktivitas Terkini</h3>
             </div>
-            <CardContent className="p-4 space-y-3.5">
+            <CardContent className="p-4 space-y-2.5">
               {recentActivities.map((act) => {
                 const Icon = act.icon
                 return (
-                  <div key={act.id} className="flex items-center gap-3 text-xs">
-                    <div className={`p-2.5 rounded-xl shrink-0 shadow-xs ${act.iconColor}`}>
+                  <div
+                    key={act.id}
+                    className={`flex min-h-[60px] items-center gap-3 rounded-xl border p-3 text-xs transition-colors ${
+                      isDark
+                        ? "border-white/10 bg-[#111827]/70"
+                        : "border-slate-200 bg-slate-50"
+                    }`}
+                  >
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl shrink-0 shadow-xs ${act.iconColor}`}>
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={`font-medium leading-relaxed ${isDark ? "text-white" : "text-black"}`}>
+                      <p className={`font-semibold leading-snug ${isDark ? "text-white" : "text-slate-900"}`}>
                         {act.text}
                       </p>
-                      <span className={`text-[10px] font-semibold mt-0.5 block ${isDark ? "text-gray-400" : "text-slate-600"}`}>{act.time}</span>
+                      <span className={`text-[10px] font-semibold mt-1 block ${isDark ? "text-gray-400" : "text-slate-500"}`}>{act.time}</span>
                     </div>
                   </div>
                 )
