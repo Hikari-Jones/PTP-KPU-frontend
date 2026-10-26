@@ -411,7 +411,7 @@ export function Sidebar({ collapsed, onToggleCollapse, activeMenu, onSelectMenu,
         <button
           onClick={logout}
           className={`w-full mt-2 flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${isDark
-              ? "text-red-400/70 hover:text-red-400 hover:bg-red-950/20"
+              ? "text-red-400 hover:text-red-300 hover:bg-red-950/30 font-semibold"
               : "text-red-600/70 hover:text-red-600 hover:bg-red-50"
             } ${collapsed ? "justify-center px-0" : ""}`}
           title="Keluar"

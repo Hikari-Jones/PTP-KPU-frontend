@@ -1,286 +1,177 @@
-import React, { useState } from "react"
+﻿import { useState, type FormEvent, type ChangeEvent } from "react"
 import {
-  Lock,
-  Eye,
-  EyeOff,
-  ArrowRight,
-  AlertCircle,
-  ShieldAlert,
-  UserCheck,
-  IdCard,
-  FileText,
-  Wallet,
-  ShieldCheck,
+  ArrowRight, AlertCircle, Archive, ChevronDown, Eye, EyeOff, FileText,
+  IdCard, LoaderCircle, LockKeyhole, MapPin, Moon, ShieldCheck, Sun, Wallet,
 } from "lucide-react"
 import { useAuth } from "../../context/AuthContext"
-import { Input } from "../ui/input"
-import { Button } from "../ui/button"
+import kpuLogo from "../../../assets/branding/kpu-sulut-logo.jpg"
+import kpuOffice from "../../../assets/branding/kpu-sulut-office.png"
+import "../../../styles/login.css"
 
 interface LoginFormProps {
   theme?: "light" | "dark"
   onToggleTheme?: () => void
 }
 
-export function LoginForm({ theme = "light" }: LoginFormProps) {
+const services = [
+  { icon: FileText, title: "Persuratan", description: "Kelola surat kedinasan" },
+  { icon: Wallet, title: "Realisasi anggaran", description: "Pantau penggunaan anggaran" },
+  { icon: Archive, title: "Arsip digital", description: "Dokumen dalam satu tempat" },
+]
+
+export function LoginForm({ theme = "light", onToggleTheme }: LoginFormProps) {
   const { login } = useAuth()
-  const [nip, setNip] = useState("199208052021011002")
-  const [password, setPassword] = useState("123456")
+  const [nip, setNip] = useState("")
+  const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [showHelp, setShowHelp] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const isDark = theme === "dark"
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (isLoading) return
     setErrorMessage(null)
     setIsLoading(true)
-
-    setTimeout(() => {
-      const res = login(nip, password)
+    window.setTimeout(() => {
+      const result = login(nip, password)
       setIsLoading(false)
-      if (!res.success) {
-        setErrorMessage(res.error || "NIP/Kata Sandi Tidak Valid")
+      if (!result.success) {
+        setErrorMessage(result.error || "NIP atau kata sandi tidak sesuai. Silakan coba kembali.")
       }
     }, 400)
   }
 
-  const handleSelectDemo = (demoNip: string, demoPass: string) => {
-    setNip(demoNip)
-    setPassword(demoPass)
+  const handleNipChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setNip(event.target.value.replace(/\D/g, "").slice(0, 18))
     setErrorMessage(null)
   }
 
-  const handleNipChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 18)
-    setNip(digitsOnly)
+  const handleSelectDemo = (demoNip: string, demoPassword: string) => {
+    setNip(demoNip)
+    setPassword(demoPassword)
+    setErrorMessage(null)
   }
 
-  const highlights = [
-    { icon: FileText, text: "Surat-menyurat kedinasan terpusat & tertelusur" },
-    { icon: Wallet, text: "Pemantauan realisasi anggaran secara real-time" },
-    { icon: ShieldCheck, text: "Akses berbasis NIP dengan kendali peran pengguna" },
-  ]
-
-  const inputBase = isDark
-    ? "bg-[#0d1322] border-[#1e293b] text-gray-100"
-    : "bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:bg-white"
-
   return (
-    <div
-      className={`min-h-screen w-full flex font-sans transition-colors duration-300 ${
-        isDark ? "bg-[#060a12] text-gray-100" : "bg-slate-100 text-slate-900"
-      }`}
-    >
-      {/* Panel Kiri — Identitas Institusi */}
-      <div className="hidden lg:flex lg:w-[45%] xl:w-[40%] relative flex-col justify-between overflow-hidden bg-gradient-to-br from-[#3f0a0a] via-[#7f1d1d] to-red-800 text-white p-10 xl:p-14">
-        <div className="absolute -right-24 -bottom-24 w-96 h-96 rounded-full bg-black/10 blur-3xl pointer-events-none" />
-        <div className="absolute -left-16 top-1/3 w-72 h-72 rounded-full bg-white/5 blur-3xl pointer-events-none" />
-
-        <div className="relative flex items-center gap-3">
-          <div className="w-12 h-12 rounded-md bg-white/10 border border-white/25 flex items-center justify-center font-black text-lg tracking-wide">
-            KPU
-          </div>
-          <div className="leading-tight">
-            <p className="font-bold text-sm tracking-wide">KOMISI PEMILIHAN UMUM</p>
-            <p className="text-[11px] uppercase tracking-widest text-red-200/80">Provinsi Sulawesi Utara</p>
-          </div>
-        </div>
-
-        <div className="relative space-y-8">
-          <div>
-            <h1 className="text-3xl xl:text-4xl font-extrabold leading-tight tracking-tight">
-              Platform Terpadu
-              <br />
-              Penunjang KPU
-            </h1>
-            <p className="mt-3 text-sm text-red-100/80 max-w-sm leading-relaxed">
-              Portal internal resmi bagi Aparatur Sipil Negara dan personel Sekretariat KPU
-              Sulawesi Utara untuk mendukung tata kelola administrasi kepemiluan.
-            </p>
-          </div>
-
-          {/* Kartu identitas ringkas — menegaskan login berbasis NIP */}
-          <div className="rounded-xl border border-white/15 bg-white/5 p-4 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-400/15 border border-amber-300/30 flex items-center justify-center shrink-0">
-              <IdCard className="w-4 h-4 text-amber-300" />
-            </div>
-            <div className="text-xs">
-              <p className="font-semibold text-red-50">Masuk dengan Identitas Kepegawaian</p>
-              <p className="text-red-200/70 mt-0.5">Autentikasi menggunakan Nomor Induk Pegawai (NIP) resmi</p>
-            </div>
-          </div>
-
-          <div className="space-y-3.5 border-t border-white/15 pt-6">
-            {highlights.map((h, i) => {
-              const Icon = h.icon
-              return (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 text-amber-300" />
-                  </div>
-                  <span className="text-xs font-medium text-red-50/90">{h.text}</span>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        <p className="relative text-[10px] text-red-200/60 tracking-wide">
-          &copy; {new Date().getFullYear()} Sekretariat KPU Provinsi Sulawesi Utara. Akses internal terbatas.
-        </p>
+    <div className={`login-page ${theme === "dark" ? "login-page--dark" : ""}`}>
+      <div className="login-backdrop" aria-hidden="true">
+        <img src={kpuOffice} alt="" fetchPriority="high" />
       </div>
-
-      {/* Panel Kanan — Form Login */}
-      <div className={`flex-1 flex items-center justify-center p-6 sm:p-10 relative ${isDark ? "bg-[#060a12]" : "bg-white"}`}>
-
-
-        <div className="w-full max-w-sm animate-in fade-in zoom-in-95 duration-300">
-          {/* Branding ringkas untuk layar kecil */}
-          <div className="flex lg:hidden items-center gap-3 mb-8">
-            <div className="w-11 h-11 rounded-md bg-red-700 flex items-center justify-center font-black text-white text-sm border border-red-500/40">
-              KPU
-            </div>
-            <div className="leading-tight">
-              <p className={`font-bold text-sm ${isDark ? "text-white" : "text-slate-900"}`}>KPU Sulawesi Utara</p>
-              <p className={`text-[10px] uppercase tracking-wider ${isDark ? "text-gray-400" : "text-slate-500"}`}>
-                Platform Terpadu Penunjang KPU
-              </p>
-            </div>
+      <a className="login-skip-link" href="#login-nip">Langsung ke formulir masuk</a>
+      <header className="login-header">
+        <div className="login-brand">
+          <div className="login-logo">
+            <img src={kpuLogo} alt="Logo KPU Provinsi Sulawesi Utara" width={1080} height={1080} />
           </div>
-
-          <div className="mb-7">
-            <h2 className={`text-2xl font-bold tracking-tight ${isDark ? "text-white" : "text-slate-900"}`}>
-              Masuk ke Portal
-            </h2>
-            <p className={`text-xs mt-1.5 ${isDark ? "text-gray-400" : "text-slate-500"}`}>
-              Gunakan Nomor Induk Pegawai (NIP) dan kata sandi kedinasan Anda.
-            </p>
+          <div className="login-brand-copy">
+            <span>Komisi Pemilihan Umum</span>
+            <strong>Provinsi Sulawesi Utara</strong>
           </div>
-
-          {errorMessage && (
-            <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs flex items-center gap-2 animate-in fade-in zoom-in-95">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span className="font-semibold">{errorMessage}</span>
-            </div>
+        </div>
+        <div className="login-header-actions">
+          <span className="login-internal-label"><span />Portal internal</span>
+          {onToggleTheme && (
+            <button type="button" className="login-theme-toggle" onClick={onToggleTheme}
+              aria-label={theme === "dark" ? "Gunakan tema terang" : "Gunakan tema gelap"}
+              title={theme === "dark" ? "Gunakan tema terang" : "Gunakan tema gelap"}>
+              {theme === "dark" ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+            </button>
           )}
-
-          <div className={`mb-5 p-3 rounded-lg border text-xs space-y-1.5 ${isDark ? "border-[#1e293b] bg-[#0d1322]" : "border-slate-200 bg-slate-50"}`}>
-            <span className={`font-bold text-[10px] uppercase tracking-wider block ${isDark ? "text-gray-400" : "text-slate-500"}`}>
-              Uji Coba Kredensial
-            </span>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => handleSelectDemo("198507182020031001", "admin123")}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-medium border flex items-center gap-1 cursor-pointer transition-all ${
-                  nip === "198507182020031001"
-                    ? "bg-red-600 text-white border-red-600"
-                    : isDark
-                    ? "border-[#1e293b] bg-[#111827] text-gray-300 hover:border-red-500/50"
-                    : "border-slate-300 bg-white text-slate-700 hover:border-red-500/50"
-                }`}
-              >
-                <ShieldAlert className="w-3 h-3" />
-                <span>Role Admin</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSelectDemo("199208052021011002", "123456")}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-medium border flex items-center gap-1 cursor-pointer transition-all ${
-                  nip === "199208052021011002"
-                    ? "bg-red-600 text-white border-red-600"
-                    : isDark
-                    ? "border-[#1e293b] bg-[#111827] text-gray-300 hover:border-red-500/50"
-                    : "border-slate-300 bg-white text-slate-700 hover:border-red-500/50"
-                }`}
-              >
-                <UserCheck className="w-3 h-3" />
-                <span>Role Operator</span>
-              </button>
-            </div>
+        </div>
+      </header>
+      <main className="login-main" id="main-content">
+        <section className="login-intro" aria-labelledby="login-title">
+          <div className="login-eyebrow"><span />PTP-KPU</div>
+          <h1 id="login-title">Platform Terpadu<br /><span>Penunjang KPU.</span></h1>
+          <p className="login-intro-description">
+            Satu akses untuk administrasi yang lebih terintegrasi.
+            Mendukung kerja dan pelayanan Sekretariat KPU Provinsi Sulawesi Utara.
+          </p>
+          <div className="login-services" aria-label="Layanan portal">
+            {services.map(({ icon: Icon, title, description }) => (
+              <div className="login-service" key={title}>
+                <Icon size={21} strokeWidth={1.5} aria-hidden="true" />
+                <h2>{title}</h2>
+                <p>{description}</p>
+              </div>
+            ))}
           </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1.5">
-              <label className={`text-xs font-semibold block ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-                Nomor Induk Pegawai (NIP)
-              </label>
-              <div className="relative">
-                <IdCard className={`w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 ${isDark ? "text-gray-500" : "text-slate-400"}`} />
-                <Input
-                  type="text"
-                  inputMode="numeric"
-                  required
-                  value={nip}
-                  onChange={handleNipChange}
-                  placeholder="198507182020031001"
-                  maxLength={18}
-                  className={`pl-9 h-10 text-sm font-mono tracking-wide focus:border-red-500 ${inputBase}`}
-                />
+          <p className="login-location"><MapPin size={15} aria-hidden="true" />Kantor KPU Provinsi Sulawesi Utara</p>
+        </section>
+        <section className="login-card" aria-labelledby="login-form-title">
+          <div className="login-card-heading">
+            <div className="login-card-eyebrow"><span className="login-access-icon"><LockKeyhole size={17} aria-hidden="true" /></span>Akses pegawai</div>
+            <h2 id="login-form-title">Selamat datang</h2>
+            <p>Silakan masuk ke akun PTP-KPU Anda.</p>
+          </div>
+          <form className="login-form" onSubmit={handleSubmit} aria-busy={isLoading}>
+            {errorMessage && (
+              <div className="login-error" id="login-error" role="alert">
+                <AlertCircle size={18} aria-hidden="true" /><span>{errorMessage}</span>
               </div>
-              <p className={`text-[10px] ${isDark ? "text-gray-500" : "text-slate-400"}`}>18 digit sesuai kartu identitas pegawai</p>
+            )}
+            <div className="login-field">
+              <label htmlFor="login-nip">Nomor Induk Pegawai <span>(NIP)</span></label>
+              <div className="login-input-wrap">
+                <IdCard className="login-input-icon" size={19} aria-hidden="true" />
+                <input id="login-nip" name="username" type="text" inputMode="numeric" autoComplete="username"
+                  required pattern="[0-9]{18}" title="Masukkan NIP yang terdiri dari 18 digit angka"
+                  value={nip} onChange={handleNipChange} placeholder="Masukkan 18 digit NIP" maxLength={18}
+                  readOnly={isLoading} aria-invalid={!!errorMessage}
+                  aria-describedby={errorMessage ? "login-nip-hint login-error" : "login-nip-hint"} />
+              </div>
+              <p className="login-field-hint" id="login-nip-hint">Gunakan NIP sesuai identitas kepegawaian Anda.</p>
             </div>
-
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label className={`text-xs font-semibold block ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-                  Kata Sandi
-                </label>
-                <a
-                  href="#forgot"
-                  onClick={(e) => e.preventDefault()}
-                  className="text-[11px] text-red-600 hover:text-red-500 hover:underline font-medium"
-                >
-                  Lupa sandi?
-                </a>
+            <div className="login-field">
+              <div className="login-label-row">
+                <label htmlFor="login-password">Kata sandi</label>
+                <button type="button" className="login-help-toggle" onClick={() => setShowHelp(!showHelp)}
+                  aria-expanded={showHelp} aria-controls="login-help">Lupa kata sandi?</button>
               </div>
-              <div className="relative">
-                <Lock className={`w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 ${isDark ? "text-gray-500" : "text-slate-400"}`} />
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className={`pl-9 pr-9 h-10 text-sm focus:border-red-500 ${inputBase}`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className={`absolute right-3 top-1/2 -translate-y-1/2 ${isDark ? "text-gray-500 hover:text-white" : "text-slate-400 hover:text-slate-700"}`}
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              <div className="login-input-wrap">
+                <LockKeyhole className="login-input-icon" size={18} aria-hidden="true" />
+                <input id="login-password" name="password" type={showPassword ? "text" : "password"}
+                  autoComplete="current-password" required value={password}
+                  onChange={(event) => { setPassword(event.target.value); setErrorMessage(null) }}
+                  placeholder="Masukkan kata sandi" readOnly={isLoading} aria-invalid={!!errorMessage}
+                  aria-describedby={errorMessage ? "login-error" : undefined} />
+                <button type="button" className="login-password-toggle" onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
+                  aria-pressed={showPassword} aria-controls="login-password">
+                  {showPassword ? <EyeOff size={19} aria-hidden="true" /> : <Eye size={19} aria-hidden="true" />}
                 </button>
               </div>
             </div>
-
-            <label className={`flex items-center gap-2 cursor-pointer text-xs ${isDark ? "text-gray-400" : "text-slate-600"}`}>
-              <input type="checkbox" defaultChecked className="rounded border-slate-400 bg-white text-red-600 focus:ring-red-500" />
-              <span>Ingat saya di perangkat ini</span>
-            </label>
-
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full btn-kpu-red text-white font-semibold h-10 rounded-lg flex items-center justify-center gap-2 text-sm transition-all mt-2 cursor-pointer"
-            >
+            <div className="login-help" id="login-help" hidden={!showHelp}>
+              Hubungi administrator PTP-KPU di Sekretariat KPU Provinsi Sulawesi Utara untuk bantuan pengaturan ulang kata sandi.
+            </div>
+            <button className="login-submit" type="submit" disabled={isLoading}>
               {isLoading ? (
-                <span>Memverifikasi kredensial...</span>
+                <><LoaderCircle className="login-spinner" size={19} aria-hidden="true" /><span>Memverifikasi akun...</span></>
               ) : (
-                <>
-                  <span>Masuk Portal Operasional</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
+                <><span>Masuk ke portal</span><ArrowRight size={19} aria-hidden="true" /></>
               )}
-            </Button>
+            </button>
+            <span className="login-sr-only" role="status">{isLoading ? "Sedang memverifikasi akun. Mohon tunggu." : ""}</span>
           </form>
-
-          <p className={`mt-6 text-[11px] text-center ${isDark ? "text-gray-500" : "text-slate-400"}`}>
-            Akses hanya untuk personel terdaftar di Sekretariat KPU Provinsi Sulawesi Utara.
-          </p>
-        </div>
-      </div>
+          <div className="login-access-note">
+            <ShieldCheck size={19} strokeWidth={1.7} aria-hidden="true" />
+            <p>Akses khusus pegawai terdaftar.<br /><span>Jaga kerahasiaan akun dan kata sandi Anda.</span></p>
+          </div>
+          <details className="login-demo">
+            <summary>Akun uji coba <ChevronDown size={15} aria-hidden="true" /></summary>
+            <div className="login-demo-options">
+              <button type="button" disabled={isLoading} onClick={() => handleSelectDemo("198507182020031001", "admin123")}>Isi akun Admin</button>
+              <button type="button" disabled={isLoading} onClick={() => handleSelectDemo("199208052021011002", "123456")}>Isi akun Operator</button>
+            </div>
+          </details>
+        </section>
+      </main>
+      <footer className="login-footer">
+        <p>&copy; {new Date().getFullYear()} KPU Provinsi Sulawesi Utara.</p>
+        <p>Platform Terpadu Penunjang KPU<span aria-hidden="true"> / </span><span>Sekretariat KPU Sulut</span></p>
+      </footer>
     </div>
   )
 }

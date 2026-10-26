@@ -818,7 +818,7 @@ export function SuratView({ theme = "dark", subTab = "overview" }: SuratViewProp
             className={`${isDark ? "bg-[#1e293b]/70 border-white/10" : "bg-white/85 border-slate-200"
               } backdrop-blur-md shadow-lg rounded-2xl`}
           >
-            <CardContent className="p-4 flex flex-wrap items-center justify-between gap-4 text-xs">
+            <CardContent className="p-4 !pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
               <div className="relative flex-1 max-w-md">
                 <Search
                   className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 ${isDark ? "text-gray-400" : "text-slate-500"
